@@ -1,12 +1,12 @@
 services:
   # ====================================================================================================================
-  # POSTGRES SERVER
+  # POSTGRES SERVER - auth-user
   # ====================================================================================================================
-  pg-docker:
+  pg-docker-auth-user:
     image: postgres:16-alpine
-    container_name: dev-postgresql
+    container_name: pg-auth-user
     environment:
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: ead-authuser
       POSTGRES_PASSWORD: 1234567
     ports:
       - 5433:5432
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./.data/pgadmin:/var/lib/pgadmin
     depends_on:
-      - pg-docker
+      - pg-docker-auth-user
     networks:
       - dev-network
 # ======================================================================================================================
