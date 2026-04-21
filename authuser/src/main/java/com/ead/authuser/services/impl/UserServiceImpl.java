@@ -1,6 +1,6 @@
 package com.ead.authuser.services.impl;
 
-import com.ead.authuser.exceptions.NotFoundException;
+import com.ead.authuser.services.exceptions.NotFoundException;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
