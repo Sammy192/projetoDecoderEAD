@@ -27,13 +27,13 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getOneUser(@PathVariable(value = "userId") UUID userId) {
-        Optional<UserModel> userModelOptional = userService.findById(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional.get());
+        UserModel userModelOptional = userService.findById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object> deleteUser(@PathVariable(value = "userId") UUID userId) {
-        userService.delete(userService.findById(userId).get());
+        userService.delete(userService.findById(userId));
         return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
     }
 
