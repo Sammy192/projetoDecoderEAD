@@ -1,7 +1,7 @@
 package com.ead.authuser.models;
 
-import com.ead.authuser.enums.UserStatus;
-import com.ead.authuser.enums.UserType;
+import com.ead.authuser.enums.UserStatusEnum;
+import com.ead.authuser.enums.UserTypeEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,10 +31,10 @@ public class UserModel implements Serializable {
     private String fullName;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private UserStatusEnum userStatus;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private UserTypeEnum userType;
     @Column(length = 20)
     private String phoneNumber;
     @Column(length = 255)
@@ -87,20 +87,20 @@ public class UserModel implements Serializable {
         this.fullName = fullName;
     }
 
-    public UserStatus getUserStatus() {
+    public UserStatusEnum getUserStatus() {
         return userStatus;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setUserStatus(UserStatusEnum userStatusEnum) {
+        this.userStatus = userStatusEnum;
     }
 
-    public UserType getUserType() {
+    public UserTypeEnum getUserType() {
         return userType;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setUserType(UserTypeEnum userTypeEnum) {
+        this.userType = userTypeEnum;
     }
 
     public String getPhoneNumber() {
