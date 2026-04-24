@@ -45,4 +45,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userModel);
     }
 
+    @PutMapping("/{userId}/password")
+    public ResponseEntity<Object> updatePassword(@PathVariable(value = "userId") UUID userId,
+                                             @RequestBody @JsonView(UserDTORequest.UserView.PasswordPut.class) UserDTORequest userDTORequest) {
+        UserModel userModel = userService.findById(userId);
+        if (!userModel.getPassword().equals(userDTORequest.oldPassword())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password!");
+        }
+        userService.updatePassword(userDTORequest, userModel);
+        return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully.");
+    }
+
 }
