@@ -56,4 +56,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully.");
     }
 
+    @PutMapping("/{userId}/image")
+    public ResponseEntity<Object> updateImage(@PathVariable(value = "userId") UUID userId,
+                                             @RequestBody @JsonView(UserDTORequest.UserView.ImagePut.class) UserDTORequest userDTORequest) {
+        UserModel userModel = userService.updateImage(userDTORequest, userService.findById(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userModel);
+    }
+
 }
