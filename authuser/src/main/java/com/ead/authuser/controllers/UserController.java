@@ -1,7 +1,9 @@
 package com.ead.authuser.controllers;
 
+import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,13 @@ public class UserController {
     public ResponseEntity<Object> deleteUser(@PathVariable(value = "userId") UUID userId) {
         userService.delete(userService.findById(userId));
         return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<Object> updateUser(@PathVariable(value = "userId") UUID userId,
+                                             @RequestBody @JsonView(UserDTORequest.UserView.UserPut.class) UserDTORequest userDTORequest) {
+        UserModel userModel = userService.updateUser(userDTORequest, userService.findById(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userModel);
     }
 
 }
