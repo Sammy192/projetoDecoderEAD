@@ -1,4 +1,4 @@
-package com.ead.authuser.validations;
+package com.ead.authuser.configs.validations;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

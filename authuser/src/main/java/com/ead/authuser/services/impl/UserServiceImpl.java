@@ -3,7 +3,7 @@ package com.ead.authuser.services.impl;
 import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
-import com.ead.authuser.services.exceptions.NotFoundException;
+import com.ead.authuser.configs.exceptions.NotFoundException;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;

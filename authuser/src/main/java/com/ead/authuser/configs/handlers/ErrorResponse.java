@@ -1,4 +1,4 @@
-package com.ead.authuser.controllers.handlers;
+package com.ead.authuser.configs.handlers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
