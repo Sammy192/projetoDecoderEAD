@@ -2,6 +2,7 @@ package com.ead.course.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -30,6 +31,11 @@ public class LessonModel implements Serializable {
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime creationDate;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "module_id")
+    private ModuleModel module;
 
     public UUID getLessonId() {
         return lessonId;
@@ -71,4 +77,11 @@ public class LessonModel implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public ModuleModel getModule() {
+        return module;
+    }
+
+    public void setModule(ModuleModel module) {
+        this.module = module;
+    }
 }
