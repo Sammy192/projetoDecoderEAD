@@ -55,6 +55,9 @@ public class CourseModel implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
+    // gera um comando de delete do pai e delega para o banco delete do cascade pois O Hibernate cria a tabela no banco de dados com a cláusula ON DELETE CASCADE na Foreign Key.
+    //se usar o cascade = CascadeType.ALL, orphanRemoval = true, irá gerar 1 delete para cada filho e depois 1 para o pai. N + 1 instruções.
     private Set<ModuleModel> modules;
 
     public UUID getCourseId() {
@@ -109,11 +112,31 @@ public class CourseModel implements Serializable {
         return courseStatus;
     }
 
+    public void setCourseStatus(CourseStatus courseStatus) {
+        this.courseStatus = courseStatus;
+    }
+
     public Set<ModuleModel> getModules() {
         return modules;
     }
 
     public void setModules(Set<ModuleModel> modules) {
         this.modules = modules;
+    }
+
+    public CourseLevel getCourseLevel() {
+        return courseLevel;
+    }
+
+    public void setCourseLevel(CourseLevel courseLevel) {
+        this.courseLevel = courseLevel;
+    }
+
+    public UUID getUserInstructor() {
+        return userInstructor;
+    }
+
+    public void setUserInstructor(UUID userInstructor) {
+        this.userInstructor = userInstructor;
     }
 }
