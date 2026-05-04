@@ -12,4 +12,6 @@ public interface ModuleService {
     List<ModuleModel> findAllModulesByCourse(CourseModel courseModel);
 
     ModuleModel saveModule(ModuleDTO moduleDto, UUID courseId);
+
+    List<ModuleModel> findAllModulesByCourseId(UUID courseId);
 }
