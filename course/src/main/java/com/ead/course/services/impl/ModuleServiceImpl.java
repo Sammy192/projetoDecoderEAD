@@ -45,7 +45,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public ModuleModel saveModule(ModuleDTO moduleDto, UUID courseId) {
-        CourseModel courseModel = courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found."));
+        CourseModel courseModel = getCourseModel(courseId);
         ModuleModel moduleModel = new ModuleModel();
         BeanUtils.copyProperties(moduleDto, moduleModel);
         moduleModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
@@ -53,9 +53,20 @@ public class ModuleServiceImpl implements ModuleService {
         return moduleRepository.save(moduleModel);
     }
 
+    private CourseModel getCourseModel(UUID courseId) {
+        return courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found."));
+    }
+
     @Override
     public List<ModuleModel> findAllModulesByCourseId(UUID courseId) {
         return moduleRepository.findAllByCourseCourseId(courseId);
+    }
+
+    @Override
+    public ModuleModel findModuleByIdIntoCourse(UUID courseId, UUID moduleId) {
+        CourseModel courseModel = getCourseModel(courseId);
+        return moduleRepository.findByCourseCourseIdAndModuleId(courseModel.getCourseId(), moduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Module not found for this course."));
     }
 
 }

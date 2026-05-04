@@ -33,7 +33,13 @@ public class ModuleController {
     }
 
     @GetMapping("/courses/{courseId}/modules")
-    public ResponseEntity<List<ModuleModel>> getAllModules(@PathVariable(value = "courseId") UUID courseId) {
+    public ResponseEntity<List<ModuleModel>> findAllModulesByCourseId(@PathVariable(value = "courseId") UUID courseId) {
         return ResponseEntity.status(HttpStatus.OK).body(moduleService.findAllModulesByCourseId(courseId));
+    }
+
+    @GetMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object> getOneModules(@PathVariable(value = "courseId") UUID courseId,
+                                                @PathVariable(value = "moduleId") UUID moduleId) {
+        return ResponseEntity.status(HttpStatus.OK).body(moduleService.findModuleByIdIntoCourse(courseId, moduleId));
     }
 }
