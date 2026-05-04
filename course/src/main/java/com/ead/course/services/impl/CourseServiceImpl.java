@@ -56,4 +56,17 @@ public class CourseServiceImpl implements CourseService {
     public boolean existsByName(String name) {
         return courseRepository.existsByName(name);
     }
+
+    @Override
+    public List<CourseModel> findAll() {
+        return courseRepository.findAll();
+    }
+
+    @Override
+    public CourseModel updateCourse(UUID courseId, CourseDTO courseDto) {
+        CourseModel courseModel = findById(courseId);
+        BeanUtils.copyProperties(courseDto, courseModel);
+        courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        return courseRepository.save(courseModel);
+    }
 }
