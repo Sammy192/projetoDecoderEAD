@@ -38,12 +38,6 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ModuleModel> findAllModulesByCourse(CourseModel courseModel) {
-        return moduleRepository.findAllByCourseCourseId(courseModel.getCourseId());
-    }
-
-    @Override
     public ModuleModel saveModule(ModuleDTO moduleDto, UUID courseId) {
         CourseModel courseModel = getCourseModel(courseId);
         ModuleModel moduleModel = new ModuleModel();
@@ -58,6 +52,7 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ModuleModel> findAllModulesByCourseId(UUID courseId) {
         return moduleRepository.findAllByCourseCourseId(courseId);
     }
@@ -67,6 +62,13 @@ public class ModuleServiceImpl implements ModuleService {
         CourseModel courseModel = getCourseModel(courseId);
         return moduleRepository.findByCourseCourseIdAndModuleId(courseModel.getCourseId(), moduleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Module not found for this course."));
+    }
+
+    @Override
+    public ModuleModel updateModule(UUID courseId, UUID moduleId, ModuleDTO moduleDTO) {
+        ModuleModel moduleModel = findModuleByIdIntoCourse(courseId, moduleId);
+        BeanUtils.copyProperties(moduleDTO, moduleModel);
+        return moduleRepository.save(moduleModel);
     }
 
 }

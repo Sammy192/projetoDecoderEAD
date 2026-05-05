@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CourseService {
-    void deleteCourse(CourseModel course);
+    void deleteCourse(UUID courseId);
     CourseModel findById(UUID courseId);
 
     CourseModel saveCourse(CourseDTO courseDto);

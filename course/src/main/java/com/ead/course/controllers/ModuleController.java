@@ -1,5 +1,6 @@
 package com.ead.course.controllers;
 
+import com.ead.course.dto.CourseDTO;
 import com.ead.course.dto.ModuleDTO;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.ModuleModel;
@@ -41,5 +42,22 @@ public class ModuleController {
     public ResponseEntity<Object> getOneModules(@PathVariable(value = "courseId") UUID courseId,
                                                 @PathVariable(value = "moduleId") UUID moduleId) {
         return ResponseEntity.status(HttpStatus.OK).body(moduleService.findModuleByIdIntoCourse(courseId, moduleId));
+    }
+
+    @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object> deleteModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
+                                                            @PathVariable(value = "moduleId") UUID moduleId) {
+        ModuleModel moduleModel = moduleService.findModuleByIdIntoCourse(courseId, moduleId);
+        moduleService.deleteModule(moduleModel);
+        return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully.");
+    }
+
+    @PutMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object> updateModule(@PathVariable(value = "courseId") UUID courseId,
+                                               @PathVariable(value = "moduleId") UUID moduleId,
+                                               @RequestBody @Valid ModuleDTO moduleDto) {
+        ModuleModel moduleModel = moduleService.updateModule(courseId, moduleId, moduleDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(moduleModel);
     }
 }

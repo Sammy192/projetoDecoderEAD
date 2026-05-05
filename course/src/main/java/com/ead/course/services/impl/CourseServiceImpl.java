@@ -29,9 +29,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public void deleteCourse(CourseModel course) {
-        CourseModel courseModel = findById(course.getCourseId());
-        List<ModuleModel> moduleModelList = moduleService.findAllModulesByCourse(courseModel);
+    public void deleteCourse(UUID courseId) {
+        CourseModel courseModel = findById(courseId);
+        List<ModuleModel> moduleModelList = moduleService.findAllModulesByCourseId(courseModel.getCourseId());
         if (!moduleModelList.isEmpty()) {
             moduleModelList.forEach(moduleService::deleteModule);
         }
