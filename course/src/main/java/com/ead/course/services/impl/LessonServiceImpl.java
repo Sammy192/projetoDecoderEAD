@@ -45,4 +45,12 @@ public class LessonServiceImpl implements LessonService {
         lessonModel.setModule(moduleModel);
         return lessonRepository.save(lessonModel);
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LessonModel> findAllLessonsByModuleId(UUID moduleId) {
+        moduleRepository.findById(moduleId).orElseThrow(() -> new ResourceNotFoundException("Module not found."));
+        return lessonRepository.findAllByModuleModuleId(moduleId);
+    }
 }
