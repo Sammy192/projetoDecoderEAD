@@ -2,6 +2,7 @@ package com.ead.course.services.impl;
 
 import com.ead.course.configs.exceptions.ResourceNotFoundException;
 import com.ead.course.dto.LessonDTO;
+import com.ead.course.models.CourseModel;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.LessonRepository;
@@ -38,7 +39,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonModel saveLesson(LessonDTO lessonDto, UUID moduleId) {
-        ModuleModel moduleModel = moduleRepository.findById(moduleId).orElseThrow(() -> new ResourceNotFoundException("Module not found."));
+        ModuleModel moduleModel = getModuleModel(moduleId);
         var lessonModel = new LessonModel();
         BeanUtils.copyProperties(lessonDto, lessonModel);
         lessonModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
@@ -46,11 +47,21 @@ public class LessonServiceImpl implements LessonService {
         return lessonRepository.save(lessonModel);
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public List<LessonModel> findAllLessonsByModuleId(UUID moduleId) {
-        moduleRepository.findById(moduleId).orElseThrow(() -> new ResourceNotFoundException("Module not found."));
+        getModuleModel(moduleId);
         return lessonRepository.findAllByModuleModuleId(moduleId);
+    }
+
+    @Override
+    public LessonModel getOneLessonByModuleId(UUID moduleId, UUID lessonId) {
+        ModuleModel moduleModel = getModuleModel(moduleId);
+        return lessonRepository.findByModuleModuleIdAndLessonId(moduleModel.getModuleId(), lessonId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found for this module."));
+    }
+
+    private ModuleModel getModuleModel(UUID moduleId) {
+        return moduleRepository.findById(moduleId).orElseThrow(() -> new ResourceNotFoundException("Module not found."));
     }
 }

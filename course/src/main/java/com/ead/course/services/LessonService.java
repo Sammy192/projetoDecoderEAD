@@ -14,4 +14,6 @@ public interface LessonService {
     LessonModel saveLesson(LessonDTO lessonDto, UUID moduleId);
 
     List<LessonModel> findAllLessonsByModuleId(UUID moduleId);
+
+    LessonModel getOneLessonByModuleId(UUID moduleId, UUID lessonId);
 }
