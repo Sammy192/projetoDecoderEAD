@@ -1,10 +1,7 @@
 package com.ead.course.controllers;
 
-import com.ead.course.dto.CourseDTO;
 import com.ead.course.dto.ModuleDTO;
-import com.ead.course.models.CourseModel;
 import com.ead.course.models.ModuleModel;
-import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,11 +15,9 @@ import java.util.UUID;
 public class ModuleController {
 
     private final ModuleService moduleService;
-    private final CourseService courseService;
 
-    public ModuleController(ModuleService moduleService, CourseService courseService) {
+    public ModuleController(ModuleService moduleService) {
         this.moduleService = moduleService;
-        this.courseService = courseService;
     }
 
     @PostMapping("/courses/{courseId}/modules")
