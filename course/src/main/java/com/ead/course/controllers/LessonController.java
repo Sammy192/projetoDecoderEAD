@@ -2,7 +2,6 @@ package com.ead.course.controllers;
 
 import com.ead.course.dto.LessonDTO;
 import com.ead.course.models.LessonModel;
-import com.ead.course.models.ModuleModel;
 import com.ead.course.services.LessonService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -22,9 +21,9 @@ public class LessonController {
     }
 
     @PostMapping("/modules/{moduleId}/lessons")
-    public ResponseEntity<Object> saveLesson(@PathVariable(value = "moduleId") UUID moduleId,
-                                             @RequestBody @Valid LessonDTO lessonDto) {
-        LessonModel lessonModel =  lessonService.saveLesson(lessonDto, moduleId);
+    public ResponseEntity<Object> saveLessonIntoModule(@PathVariable(value = "moduleId") UUID moduleId,
+                                                       @RequestBody @Valid LessonDTO lessonDto) {
+        LessonModel lessonModel =  lessonService.saveLessonIntoModule(lessonDto, moduleId);
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonModel);
     }
 
@@ -37,6 +36,13 @@ public class LessonController {
     public ResponseEntity<Object> getOneLessonByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
                                                          @PathVariable(value = "lessonId") UUID lessonId) {
         return ResponseEntity.status(HttpStatus.OK).body(lessonService.getOneLessonByModuleId(moduleId, lessonId));
+    }
+
+    @DeleteMapping("/modules/{moduleId}/lessons/{lessonId}")
+    public ResponseEntity<Object> deleteLessonInsideAModule(@PathVariable(value = "moduleId") UUID moduleId,
+                                                            @PathVariable(value = "lessonId") UUID lessonId) {
+        lessonService.deleteLessonInsideAModule(moduleId, lessonId);
+        return ResponseEntity.status(HttpStatus.OK).body("Lesson deleted successfully.");
     }
 
 }

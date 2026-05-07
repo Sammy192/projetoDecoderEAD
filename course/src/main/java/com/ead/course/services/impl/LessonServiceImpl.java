@@ -2,7 +2,6 @@ package com.ead.course.services.impl;
 
 import com.ead.course.configs.exceptions.ResourceNotFoundException;
 import com.ead.course.dto.LessonDTO;
-import com.ead.course.models.CourseModel;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.LessonRepository;
@@ -28,17 +27,39 @@ public class LessonServiceImpl implements LessonService {
         this.moduleRepository = moduleRepository;
     }
 
+    @Override
+    public void deleteLessonInsideAModule(UUID moduleId, UUID lessonId) {
+        if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
+        deleteOneLesson(lessonId);
+    }
+
+    private void deleteOneLesson(UUID lessonId) {
+        LessonModel lessonModel = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found."));
+        lessonRepository.delete(lessonModel);
+    }
+
     @Transactional
     @Override
     public void deleteLessonsByModule(ModuleModel moduleModel) {
         List<LessonModel> lessonModelList = lessonRepository.findAllByModuleModuleId(moduleModel.getModuleId());
         if (!lessonModelList.isEmpty()) {
-            lessonRepository.deleteAll(lessonModelList);
+            lessonRepository.deleteAllInBatch(lessonModelList);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteAllByModules(List<ModuleModel> moduleModels) {
+        List<UUID> moduleIds = moduleModels.stream().map(ModuleModel::getModuleId).toList();
+        List<LessonModel> lessons = lessonRepository.findAllLessonsIntoModules(moduleIds);
+        if (!lessons.isEmpty()) {
+            lessonRepository.deleteAllInBatch(lessons);
         }
     }
 
     @Override
-    public LessonModel saveLesson(LessonDTO lessonDto, UUID moduleId) {
+    public LessonModel saveLessonIntoModule(LessonDTO lessonDto, UUID moduleId) {
         ModuleModel moduleModel = getModuleModel(moduleId);
         var lessonModel = new LessonModel();
         BeanUtils.copyProperties(lessonDto, lessonModel);
@@ -50,14 +71,14 @@ public class LessonServiceImpl implements LessonService {
     @Override
     @Transactional(readOnly = true)
     public List<LessonModel> findAllLessonsByModuleId(UUID moduleId) {
-        getModuleModel(moduleId);
+        if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
         return lessonRepository.findAllByModuleModuleId(moduleId);
     }
 
     @Override
     public LessonModel getOneLessonByModuleId(UUID moduleId, UUID lessonId) {
-        ModuleModel moduleModel = getModuleModel(moduleId);
-        return lessonRepository.findByModuleModuleIdAndLessonId(moduleModel.getModuleId(), lessonId)
+        if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
+        return lessonRepository.findByModuleModuleIdAndLessonId(moduleId, lessonId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson not found for this module."));
     }
 

@@ -7,13 +7,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ModuleService {
-    void deleteModule(ModuleModel moduleModel);
+    void deleteModuleInsideACourse(UUID courseId, UUID moduleId);
 
-    ModuleModel saveModule(ModuleDTO moduleDto, UUID courseId);
+    ModuleModel saveModuleIntoCourse(ModuleDTO moduleDto, UUID courseId);
 
     List<ModuleModel> findAllModulesByCourseId(UUID courseId);
 
     ModuleModel findModuleByIdIntoCourse(UUID courseId, UUID moduleId);
 
-    ModuleModel updateModule(UUID courseId, UUID moduleId, ModuleDTO moduleDTO);
+    ModuleModel updateModuleInsideACourse(UUID courseId, UUID moduleId, ModuleDTO moduleDTO);
+
+    void deleteAllByCourse(UUID courseId);
 }

@@ -32,13 +32,21 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Transactional
     @Override
-    public void deleteModule(ModuleModel moduleModel) {
+    public void deleteModuleInsideACourse(UUID courseId, UUID moduleId) {
+        if (!courseRepository.existsById(courseId)) throw new ResourceNotFoundException("Course not found.");
+        deleteOneModule(moduleId);
+    }
+
+    private void deleteOneModule(UUID moduleId) {
+        ModuleModel moduleModel = moduleRepository.findById(moduleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Module not found."));
         lessonService.deleteLessonsByModule(moduleModel);
         moduleRepository.delete(moduleModel);
     }
 
+    @Transactional
     @Override
-    public ModuleModel saveModule(ModuleDTO moduleDto, UUID courseId) {
+    public ModuleModel saveModuleIntoCourse(ModuleDTO moduleDto, UUID courseId) {
         CourseModel courseModel = getCourseModel(courseId);
         ModuleModel moduleModel = new ModuleModel();
         BeanUtils.copyProperties(moduleDto, moduleModel);
@@ -59,16 +67,26 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public ModuleModel findModuleByIdIntoCourse(UUID courseId, UUID moduleId) {
-        CourseModel courseModel = getCourseModel(courseId);
-        return moduleRepository.findByCourseCourseIdAndModuleId(courseModel.getCourseId(), moduleId)
+        if (!courseRepository.existsById(courseId)) throw new ResourceNotFoundException("Course not found.");
+        return moduleRepository.findByCourseCourseIdAndModuleId(courseId, moduleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Module not found for this course."));
     }
 
     @Override
-    public ModuleModel updateModule(UUID courseId, UUID moduleId, ModuleDTO moduleDTO) {
+    public ModuleModel updateModuleInsideACourse(UUID courseId, UUID moduleId, ModuleDTO moduleDTO) {
         ModuleModel moduleModel = findModuleByIdIntoCourse(courseId, moduleId);
         BeanUtils.copyProperties(moduleDTO, moduleModel);
         return moduleRepository.save(moduleModel);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAllByCourse(UUID courseId) {
+        List<ModuleModel> modules = moduleRepository.findAllByCourseCourseId(courseId);
+        if (!modules.isEmpty()) {
+            lessonService.deleteAllByModules(modules);
+            moduleRepository.deleteAllInBatch(modules);
+        }
     }
 
 }

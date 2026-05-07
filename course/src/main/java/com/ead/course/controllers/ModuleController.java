@@ -21,11 +21,10 @@ public class ModuleController {
     }
 
     @PostMapping("/courses/{courseId}/modules")
-    public ResponseEntity<Object> saveModule(@PathVariable(value = "courseId") UUID courseId,
-                                             @RequestBody @Valid ModuleDTO moduleDto) {
-        ModuleModel moduleModel =  moduleService.saveModule(moduleDto, courseId);
+    public ResponseEntity<Object> saveModuleIntoCourse(@PathVariable(value = "courseId") UUID courseId,
+                                                       @RequestBody @Valid ModuleDTO moduleDto) {
+        ModuleModel moduleModel =  moduleService.saveModuleIntoCourse(moduleDto, courseId);
         return ResponseEntity.status(HttpStatus.CREATED).body(moduleModel);
-
     }
 
     @GetMapping("/courses/{courseId}/modules")
@@ -34,25 +33,23 @@ public class ModuleController {
     }
 
     @GetMapping("/courses/{courseId}/modules/{moduleId}")
-    public ResponseEntity<Object> getOneModules(@PathVariable(value = "courseId") UUID courseId,
-                                                @PathVariable(value = "moduleId") UUID moduleId) {
+    public ResponseEntity<Object> findModuleByIdIntoCourse(@PathVariable(value = "courseId") UUID courseId,
+                                                           @PathVariable(value = "moduleId") UUID moduleId) {
         return ResponseEntity.status(HttpStatus.OK).body(moduleService.findModuleByIdIntoCourse(courseId, moduleId));
     }
 
     @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> deleteModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId) {
-        ModuleModel moduleModel = moduleService.findModuleByIdIntoCourse(courseId, moduleId);
-        moduleService.deleteModule(moduleModel);
+        moduleService.deleteModuleInsideACourse(courseId, moduleId);
         return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully.");
     }
 
     @PutMapping("/courses/{courseId}/modules/{moduleId}")
-    public ResponseEntity<Object> updateModule(@PathVariable(value = "courseId") UUID courseId,
-                                               @PathVariable(value = "moduleId") UUID moduleId,
-                                               @RequestBody @Valid ModuleDTO moduleDto) {
-        ModuleModel moduleModel = moduleService.updateModule(courseId, moduleId, moduleDto);
-
+    public ResponseEntity<Object> updateModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
+                                                            @PathVariable(value = "moduleId") UUID moduleId,
+                                                            @RequestBody @Valid ModuleDTO moduleDto) {
+        ModuleModel moduleModel = moduleService.updateModuleInsideACourse(courseId, moduleId, moduleDto);
         return ResponseEntity.status(HttpStatus.OK).body(moduleModel);
     }
 }

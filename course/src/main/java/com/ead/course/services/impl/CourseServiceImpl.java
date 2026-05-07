@@ -31,10 +31,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(UUID courseId) {
         CourseModel courseModel = findById(courseId);
-        List<ModuleModel> moduleModelList = moduleService.findAllModulesByCourseId(courseModel.getCourseId());
-        if (!moduleModelList.isEmpty()) {
-            moduleModelList.forEach(moduleService::deleteModule);
-        }
+        moduleService.deleteAllByCourse(courseId);
         courseRepository.delete(courseModel);
     }
 
