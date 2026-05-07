@@ -16,7 +16,9 @@ public interface LessonService {
 
     LessonModel getOneLessonByModuleId(UUID moduleId, UUID lessonId);
 
-    void deleteAllByModules(List<ModuleModel> moduleModels);
+    void deleteAllLessonsByModules(List<ModuleModel> moduleModels);
 
     void deleteLessonInsideAModule(UUID moduleId, UUID lessonId);
+
+    LessonModel updateLessonInsideAModule(UUID moduleId, UUID lessonId, LessonDTO lessonDto);
 }

@@ -45,4 +45,12 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.OK).body("Lesson deleted successfully.");
     }
 
+    @PutMapping("/modules/{moduleId}/lessons/{lessonId}")
+    public ResponseEntity<Object> updateLessonInsideAModule(@PathVariable(value = "moduleId") UUID moduleId,
+                                                            @PathVariable(value = "lessonId") UUID lessonId,
+                                                            @RequestBody @Valid LessonDTO lessonDto) {
+        LessonModel lessonModel = lessonService.updateLessonInsideAModule(moduleId, lessonId, lessonDto);
+        return ResponseEntity.status(HttpStatus.OK).body(lessonModel);
+    }
+
 }

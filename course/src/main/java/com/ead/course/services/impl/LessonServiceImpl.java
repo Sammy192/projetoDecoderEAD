@@ -50,9 +50,9 @@ public class LessonServiceImpl implements LessonService {
 
     @Transactional
     @Override
-    public void deleteAllByModules(List<ModuleModel> moduleModels) {
+    public void deleteAllLessonsByModules(List<ModuleModel> moduleModels) {
         List<UUID> moduleIds = moduleModels.stream().map(ModuleModel::getModuleId).toList();
-        List<LessonModel> lessons = lessonRepository.findAllLessonsIntoModules(moduleIds);
+        List<LessonModel> lessons = lessonRepository.findAllByModuleModuleIdIn(moduleIds);
         if (!lessons.isEmpty()) {
             lessonRepository.deleteAllInBatch(lessons);
         }
@@ -80,6 +80,13 @@ public class LessonServiceImpl implements LessonService {
         if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
         return lessonRepository.findByModuleModuleIdAndLessonId(moduleId, lessonId)
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson not found for this module."));
+    }
+
+    @Override
+    public LessonModel updateLessonInsideAModule(UUID moduleId, UUID lessonId, LessonDTO lessonDTO) {
+        LessonModel lessonModel = getOneLessonByModuleId(moduleId, lessonId);
+        BeanUtils.copyProperties(lessonDTO, lessonModel);
+        return lessonRepository.save(lessonModel);
     }
 
     private ModuleModel getModuleModel(UUID moduleId) {

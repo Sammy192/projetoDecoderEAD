@@ -62,6 +62,7 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     @Transactional(readOnly = true)
     public List<ModuleModel> findAllModulesByCourseId(UUID courseId) {
+        if (!courseRepository.existsById(courseId)) throw new ResourceNotFoundException("Course not found.");
         return moduleRepository.findAllByCourseCourseId(courseId);
     }
 
@@ -84,7 +85,7 @@ public class ModuleServiceImpl implements ModuleService {
     public void deleteAllByCourse(UUID courseId) {
         List<ModuleModel> modules = moduleRepository.findAllByCourseCourseId(courseId);
         if (!modules.isEmpty()) {
-            lessonService.deleteAllByModules(modules);
+            lessonService.deleteAllLessonsByModules(modules);
             moduleRepository.deleteAllInBatch(modules);
         }
     }
