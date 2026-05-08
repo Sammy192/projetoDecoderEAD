@@ -1,6 +1,7 @@
 package com.ead.course.specifications;
 
 import com.ead.course.models.CourseModel;
+import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
@@ -23,6 +24,9 @@ public class SpecificationTemplate {
     @Spec(path = "title", spec = LikeIgnoreCase.class)
     public interface ModuleSpec extends Specification<ModuleModel> {}
 
+    @Spec(path = "title", spec = LikeIgnoreCase.class)
+    public interface LessonSpec extends Specification<LessonModel> {}
+
     public static Specification<ModuleModel> moduleCourseId(final UUID courseId) {
         return (root, query, cb) -> cb.equal(root.get("course").get("courseId"), courseId);
         //versao com maior controle mas complexa
@@ -33,6 +37,10 @@ public class SpecificationTemplate {
             Expression<Collection<ModuleModel>> courseModules = course.get("modules");
             return cb.and(cb.equal(course.get("courseId"), courseId), cb.isMember(module, courseModules));
         };*/
+    }
+
+    public static Specification<LessonModel> lessonModuleId(final UUID moduleId) {
+        return (root, query, cb) -> cb.equal(root.get("module").get("moduleId"), moduleId);
     }
 
 }

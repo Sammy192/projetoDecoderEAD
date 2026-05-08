@@ -3,7 +3,10 @@ package com.ead.course.controllers;
 import com.ead.course.dto.LessonDTO;
 import com.ead.course.models.LessonModel;
 import com.ead.course.services.LessonService;
+import com.ead.course.specifications.SpecificationTemplate;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +31,9 @@ public class LessonController {
     }
 
     @GetMapping("/modules/{moduleId}/lessons")
-    public ResponseEntity<List<LessonModel>> findAllLessonsByModuleId(@PathVariable(value = "moduleId") UUID moduleId) {
-        return ResponseEntity.status(HttpStatus.OK).body(lessonService.findAllLessonsByModuleId(moduleId));
+    public ResponseEntity<Page<LessonModel>> findAllLessonsByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
+                                                                      SpecificationTemplate.LessonSpec spec, Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(lessonService.findAllLessonsByModuleId(SpecificationTemplate.lessonModuleId(moduleId).and(spec), pageable));
     }
 
     @GetMapping("/modules/{moduleId}/lessons/{lessonId}")
