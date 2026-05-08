@@ -2,6 +2,9 @@ package com.ead.course.services;
 
 import com.ead.course.dto.ModuleDTO;
 import com.ead.course.models.ModuleModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +15,7 @@ public interface ModuleService {
     ModuleModel saveModuleIntoCourse(ModuleDTO moduleDto, UUID courseId);
 
     List<ModuleModel> findAllModulesByCourseId(UUID courseId);
+    Page<ModuleModel> findAllModulesByCourseId(Specification<ModuleModel> spec, Pageable pageable);
 
     ModuleModel findModuleByIdIntoCourse(UUID courseId, UUID moduleId);
 

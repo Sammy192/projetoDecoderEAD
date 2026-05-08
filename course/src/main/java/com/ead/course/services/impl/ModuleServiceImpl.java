@@ -9,6 +9,9 @@ import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.LessonService;
 import com.ead.course.services.ModuleService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +67,11 @@ public class ModuleServiceImpl implements ModuleService {
     public List<ModuleModel> findAllModulesByCourseId(UUID courseId) {
         if (!courseRepository.existsById(courseId)) throw new NotFoundException("Course not found.");
         return moduleRepository.findAllByCourseCourseId(courseId);
+    }
+
+    @Override
+    public Page<ModuleModel> findAllModulesByCourseId(Specification<ModuleModel> spec, Pageable pageable) {
+        return moduleRepository.findAll(spec, pageable);
     }
 
     @Override
