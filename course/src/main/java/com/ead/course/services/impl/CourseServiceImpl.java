@@ -1,9 +1,8 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.configs.exceptions.ResourceNotFoundException;
+import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.CourseDTO;
 import com.ead.course.models.CourseModel;
-import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
@@ -37,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseModel findById(UUID courseId) {
-        return courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found."));
+        return courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found."));
     }
 
     @Override

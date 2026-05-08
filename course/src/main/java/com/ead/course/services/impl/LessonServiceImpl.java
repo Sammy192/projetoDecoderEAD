@@ -1,6 +1,6 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.configs.exceptions.ResourceNotFoundException;
+import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.LessonDTO;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
@@ -29,13 +29,13 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public void deleteLessonInsideAModule(UUID moduleId, UUID lessonId) {
-        if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
+        if (!moduleRepository.existsById(moduleId)) throw new NotFoundException("Module not found.");
         deleteOneLesson(lessonId);
     }
 
     private void deleteOneLesson(UUID lessonId) {
         LessonModel lessonModel = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found."));
+                .orElseThrow(() -> new NotFoundException("Lesson not found."));
         lessonRepository.delete(lessonModel);
     }
 
@@ -71,15 +71,15 @@ public class LessonServiceImpl implements LessonService {
     @Override
     @Transactional(readOnly = true)
     public List<LessonModel> findAllLessonsByModuleId(UUID moduleId) {
-        if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
+        if (!moduleRepository.existsById(moduleId)) throw new NotFoundException("Module not found.");
         return lessonRepository.findAllByModuleModuleId(moduleId);
     }
 
     @Override
     public LessonModel getOneLessonByModuleId(UUID moduleId, UUID lessonId) {
-        if (!moduleRepository.existsById(moduleId)) throw new ResourceNotFoundException("Module not found.");
+        if (!moduleRepository.existsById(moduleId)) throw new NotFoundException("Module not found.");
         return lessonRepository.findByModuleModuleIdAndLessonId(moduleId, lessonId)
-                .orElseThrow(() -> new ResourceNotFoundException("Lesson not found for this module."));
+                .orElseThrow(() -> new NotFoundException("Lesson not found for this module."));
     }
 
     @Override
@@ -90,6 +90,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     private ModuleModel getModuleModel(UUID moduleId) {
-        return moduleRepository.findById(moduleId).orElseThrow(() -> new ResourceNotFoundException("Module not found."));
+        return moduleRepository.findById(moduleId).orElseThrow(() -> new NotFoundException("Module not found."));
     }
 }

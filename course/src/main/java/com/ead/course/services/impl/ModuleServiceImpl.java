@@ -1,6 +1,6 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.configs.exceptions.ResourceNotFoundException;
+import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.ModuleDTO;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.ModuleModel;
@@ -33,13 +33,13 @@ public class ModuleServiceImpl implements ModuleService {
     @Transactional
     @Override
     public void deleteModuleInsideACourse(UUID courseId, UUID moduleId) {
-        if (!courseRepository.existsById(courseId)) throw new ResourceNotFoundException("Course not found.");
+        if (!courseRepository.existsById(courseId)) throw new NotFoundException("Course not found.");
         deleteOneModule(moduleId);
     }
 
     private void deleteOneModule(UUID moduleId) {
         ModuleModel moduleModel = moduleRepository.findById(moduleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Module not found."));
+                .orElseThrow(() -> new NotFoundException("Module not found."));
         lessonService.deleteLessonsByModule(moduleModel);
         moduleRepository.delete(moduleModel);
     }
@@ -56,21 +56,21 @@ public class ModuleServiceImpl implements ModuleService {
     }
 
     private CourseModel getCourseModel(UUID courseId) {
-        return courseRepository.findById(courseId).orElseThrow(() -> new ResourceNotFoundException("Course not found."));
+        return courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found."));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ModuleModel> findAllModulesByCourseId(UUID courseId) {
-        if (!courseRepository.existsById(courseId)) throw new ResourceNotFoundException("Course not found.");
+        if (!courseRepository.existsById(courseId)) throw new NotFoundException("Course not found.");
         return moduleRepository.findAllByCourseCourseId(courseId);
     }
 
     @Override
     public ModuleModel findModuleByIdIntoCourse(UUID courseId, UUID moduleId) {
-        if (!courseRepository.existsById(courseId)) throw new ResourceNotFoundException("Course not found.");
+        if (!courseRepository.existsById(courseId)) throw new NotFoundException("Course not found.");
         return moduleRepository.findByCourseCourseIdAndModuleId(courseId, moduleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Module not found for this course."));
+                .orElseThrow(() -> new NotFoundException("Module not found for this course."));
     }
 
     @Override
