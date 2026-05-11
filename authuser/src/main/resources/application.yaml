@@ -17,3 +17,10 @@ spring:
         jdbc:
           lob:
             non-contextual-creation: true
+
+logging:
+  level:
+    com.ead: TRACE
+    root: info
+    org.springframework.web: debug
+    org.hibernate: info
