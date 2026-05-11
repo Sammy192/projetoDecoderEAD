@@ -3,8 +3,9 @@ package com.ead.authuser.controllers;
 import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    Logger logger = LogManager.getLogger(AuthenticationController.class);
 
     private final UserService userService;
 
@@ -29,11 +30,14 @@ public class AuthenticationController {
     public ResponseEntity<Object> registerUser(@RequestBody @Validated(UserDTORequest.UserView.RegistrationPost.class)
                                                @JsonView(UserDTORequest.UserView.RegistrationPost.class)
                                                UserDTORequest userDTORequest) {
+        logger.debug("POST registerUser userDto received {} ", userDTORequest);
 
         if(userService.existsByUsername(userDTORequest.username())){
+            logger.warn("Username {} is already taken!", userDTORequest.username());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username já existe.");
         }
         if(userService.existsByEmail(userDTORequest.email())){
+            logger.warn("Email {} is already taken!", userDTORequest.email());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email já existe.");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(userDTORequest));
