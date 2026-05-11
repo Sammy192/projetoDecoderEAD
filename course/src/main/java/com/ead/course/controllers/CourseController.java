@@ -5,18 +5,21 @@ import com.ead.course.models.CourseModel;
 import com.ead.course.services.CourseService;
 import com.ead.course.specifications.SpecificationTemplate;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/courses")
 public class CourseController {
+
+    Logger logger = LogManager.getLogger(CourseController.class);
 
     private final CourseService courseService;
 
@@ -26,7 +29,9 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody @Valid CourseDTO courseDto) {
+        logger.debug("POST saveCourse courseDto received {} ", courseDto);
         if(courseService.existsByName(courseDto.name())) {
+            logger.warn("Error: Course Name already exists. {}", courseDto.name());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Course Name already exists.");
         }
 
@@ -45,6 +50,7 @@ public class CourseController {
 
     @DeleteMapping("/{courseId}")
     public ResponseEntity<Object> deleteCourse(@PathVariable(value = "courseId") UUID courseId) {
+        logger.debug("DELETE deleteCourse courseId received {} ", courseId);
         courseService.deleteCourse(courseId);
         return ResponseEntity.status(HttpStatus.OK).body("Course deleted successfully.");
     }
@@ -52,6 +58,7 @@ public class CourseController {
     @PutMapping("/{courseId}")
     public ResponseEntity<Object> updateCourse(@PathVariable(value = "courseId") UUID courseId,
                                                @RequestBody @Valid CourseDTO courseDto) {
+        logger.debug("PUT updateCourse courseId received {} with courseDto {} ", courseId, courseDto);
         CourseModel course = courseService.updateCourse(courseId, courseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(course);
