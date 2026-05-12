@@ -60,6 +60,10 @@ public class CourseModel implements Serializable {
     //se usar o cascade = CascadeType.ALL, orphanRemoval = true, irá gerar 1 delete para cada filho e depois 1 para o pai. N + 1 instruções.
     private Set<ModuleModel> modules;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private Set<CourseUserModel> coursesUsers;
+
     public UUID getCourseId() {
         return courseId;
     }
@@ -138,5 +142,13 @@ public class CourseModel implements Serializable {
 
     public void setUserInstructor(UUID userInstructor) {
         this.userInstructor = userInstructor;
+    }
+
+    public Set<CourseUserModel> getCoursesUsers() {
+        return coursesUsers;
+    }
+
+    public void setCoursesUsers(Set<CourseUserModel> coursesUsers) {
+        this.coursesUsers = coursesUsers;
     }
 }

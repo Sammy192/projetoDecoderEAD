@@ -5,13 +5,14 @@ import com.ead.course.models.ModuleModel;
 import com.ead.course.services.ModuleService;
 import com.ead.course.specifications.SpecificationTemplate;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -59,7 +60,7 @@ public class ModuleController {
     public ResponseEntity<Object> updateModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId,
                                                             @RequestBody @Valid ModuleDTO moduleDto) {
-        logger.debug("PUT updateModuleInsideACourse courseId {} moduleId {} moduleDto {} ", courseId, moduleId, moduleDTO);
+        logger.debug("PUT updateModuleInsideACourse courseId {} moduleId {} moduleDto {} ", courseId, moduleId, moduleDto);
         ModuleModel moduleModel = moduleService.updateModuleInsideACourse(courseId, moduleId, moduleDto);
         return ResponseEntity.status(HttpStatus.OK).body(moduleModel);
     }
