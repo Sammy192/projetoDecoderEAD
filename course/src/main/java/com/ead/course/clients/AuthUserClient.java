@@ -10,9 +10,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -46,6 +48,24 @@ public class AuthUserClient {
             throw new RuntimeException("Error Request RestClient", e);
         }
 
+    }
+
+    public Optional<UserDTO> getUserById(UUID userId) {
+        String url = baseUrlAuthuser + "/users/" + userId;
+        logger.debug("Request URL: {} ", url);
+        try {
+            UserDTO userDTO = restClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .body(UserDTO.class);
+            return Optional.ofNullable(userDTO);
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("User not found with id: {}", userId);
+            return Optional.empty();
+        } catch (RestClientException e) {
+            logger.error("Error Request RestClient with cause: {} ", e.getMessage());
+            throw new RuntimeException("Error Request RestClient", e);
+        }
     }
 
 }
