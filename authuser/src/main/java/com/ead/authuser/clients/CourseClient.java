@@ -9,9 +9,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -46,6 +48,24 @@ public class CourseClient {
             throw new RuntimeException("Error Request RestClient", e);
         }
 
+    }
+
+    public Optional<CourseDTO> getCourseById(UUID courseId) {
+        String url = baseUrlCourse + "/courses/" + courseId;
+        logger.debug("Request URL: {} ", url);
+        try {
+            CourseDTO courseDTO = restClient.get()
+                    .uri(url)
+                    .retrieve()
+                    .body(CourseDTO.class);
+            return Optional.ofNullable(courseDTO);
+        } catch (HttpClientErrorException.NotFound e) {
+            logger.warn("Course not found with id: {}", courseId);
+            return Optional.empty();
+        } catch (RestClientException e) {
+            logger.error("Error Request RestClient with cause: {} ", e.getMessage());
+            throw new RuntimeException("Error Request RestClient", e);
+        }
     }
 
 
