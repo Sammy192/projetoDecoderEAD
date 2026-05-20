@@ -2,6 +2,7 @@ package com.ead.course.clients;
 
 import com.ead.course.dto.CourseDTO;
 import com.ead.course.dto.ResponsePageDTO;
+import com.ead.course.dto.SubscriptionCourseDTO;
 import com.ead.course.dto.UserDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,5 +68,22 @@ public class AuthUserClient {
             throw new RuntimeException("Error Request RestClient", e);
         }
     }
+
+    public void postSubscriptionUserInCourse(UUID courseId, UUID userId) {
+        String url = baseUrlAuthuser + "/users/" + userId + "/courses/subscription";
+        var courseUserDTO = new SubscriptionCourseDTO(courseId);
+        logger.debug("Request URL: {} ", url);
+        try {
+            restClient.post()
+                    .uri(url)
+                    .body(courseUserDTO)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientException e) {
+            logger.error("Error Request RestClient with cause: {} ", e.getMessage());
+            throw new RuntimeException("Error Request RestClient", e);
+        }
+    }
+
 
 }
