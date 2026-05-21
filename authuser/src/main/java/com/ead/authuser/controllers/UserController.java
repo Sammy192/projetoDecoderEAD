@@ -90,4 +90,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userModel);
     }
 
+
+    @PatchMapping("/{userId}/instructor")
+    public ResponseEntity<Object> promoteToInstructor(@PathVariable(value = "userId") UUID userId) {
+        logger.debug("PUT promoteToInstructor userId received {} ", userId);
+        userService.promoteToInstructor(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body("User promoted to instructor successfully.");
+    }
 }

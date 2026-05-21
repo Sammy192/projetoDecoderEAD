@@ -29,4 +29,6 @@ public interface UserService {
     UserModel updateImage(UserDTORequest userDTORequest, UserModel byId);
 
     Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable);
+
+    void promoteToInstructor(UUID userId);
 }

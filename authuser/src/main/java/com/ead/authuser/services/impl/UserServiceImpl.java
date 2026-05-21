@@ -89,4 +89,13 @@ public class UserServiceImpl implements UserService {
     public Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable) {
         return userRepository.findAll(spec, pageable);
     }
+
+    @Override
+    public void promoteToInstructor(UUID userId) {
+        UserModel userModel = findById(userId);
+        if (UserTypeEnum.INSTRUCTOR.equals(userModel.getUserType())) return;
+        userModel.setUserType(UserTypeEnum.INSTRUCTOR);
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userRepository.save(userModel);
+    }
 }
