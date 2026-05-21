@@ -29,13 +29,8 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody @Valid CourseDTO courseDto) {
-        logger.debug("POST saveCourse courseDto received {} ", courseDto);
-        if(courseService.existsByName(courseDto.name())) {
-            logger.warn("Error: Course Name already exists. {}", courseDto.name());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Course Name already exists.");
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(courseService.saveCourse(courseDto));
+        CourseModel courseModel = courseService.saveCourse(courseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseModel);
     }
 
     @GetMapping

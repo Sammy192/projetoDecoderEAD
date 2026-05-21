@@ -16,8 +16,6 @@ public interface CourseService {
 
     CourseModel saveCourse(CourseDTO courseDto);
 
-    boolean existsByName(String name);
-
     Page<CourseModel> findAll(Specification<CourseModel> spec, Pageable pageable);
 
     CourseModel updateCourse(UUID courseId, CourseDTO courseDto);
