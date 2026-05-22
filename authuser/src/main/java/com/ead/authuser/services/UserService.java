@@ -18,10 +18,6 @@ public interface UserService {
 
     UserModel registerUser(UserDTORequest userDTORequest);
 
-    boolean existsByUsername(String username);
-
-    boolean existsByEmail(String email);
-
     UserModel updateUser(UserDTORequest userDTORequest, UserModel byId);
 
     UserModel updatePassword(UserDTORequest userDTORequest, UserModel userModel);

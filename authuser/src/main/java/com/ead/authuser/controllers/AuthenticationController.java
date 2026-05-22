@@ -31,15 +31,6 @@ public class AuthenticationController {
                                                @JsonView(UserDTORequest.UserView.RegistrationPost.class)
                                                UserDTORequest userDTORequest) {
         logger.debug("POST registerUser userDto received {} ", userDTORequest);
-
-        if(userService.existsByUsername(userDTORequest.username())){
-            logger.warn("Username {} is already taken!", userDTORequest.username());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username já existe.");
-        }
-        if(userService.existsByEmail(userDTORequest.email())){
-            logger.warn("Email {} is already taken!", userDTORequest.email());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email já existe.");
-        }
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(userDTORequest));
     }
 

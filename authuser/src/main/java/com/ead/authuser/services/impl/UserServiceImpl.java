@@ -1,12 +1,15 @@
 package com.ead.authuser.services.impl;
 
+import com.ead.authuser.configs.exceptions.ConflictException;
+import com.ead.authuser.configs.exceptions.NotFoundException;
 import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
-import com.ead.authuser.configs.exceptions.NotFoundException;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,8 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
 
@@ -44,6 +49,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel registerUser(UserDTORequest userDTORequest) {
+        if(userRepository.existsByUsername(userDTORequest.username())){
+            logger.warn("Username {} is already taken!", userDTORequest.username());
+            throw new ConflictException("Error: Username já existe.");
+
+        }
+        if(userRepository.existsByEmail(userDTORequest.email())){
+            logger.warn("Email {} is already taken!", userDTORequest.email());
+            throw new ConflictException("Error: Email já existe.");
+        }
+
         var userModel = new UserModel();
         BeanUtils.copyProperties(userDTORequest, userModel);
         userModel.setUserStatus(UserStatusEnum.ACTIVE);
@@ -51,16 +66,6 @@ public class UserServiceImpl implements UserService {
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return userRepository.save(userModel);
-    }
-
-    @Override
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
     }
 
     @Override
