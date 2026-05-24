@@ -52,10 +52,7 @@ public class CourseUserServiceImpl implements CourseUserService {
 
     @Override
     public void deleteCourseUserByCourseId(UUID courseId) {
-        List<CourseUserModel> courseUserList = courseUserRepository.findAllByCourseCourseId(courseId);
-        if (!courseUserList.isEmpty()) {
-            courseUserRepository.deleteAllInBatch(courseUserList);
-        }
+        courseUserRepository.deleteAllByCourseCourseId(courseId);
     }
 
 
