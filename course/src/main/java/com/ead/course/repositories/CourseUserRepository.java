@@ -5,6 +5,7 @@ import com.ead.course.models.CourseUserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -12,4 +13,5 @@ public interface CourseUserRepository extends JpaRepository<CourseUserModel, UUI
 
     boolean existsByCourseAndUserId(CourseModel courseModel, UUID userId);
 
+    List<CourseUserModel> findAllByCourseCourseId(UUID courseId);
 }

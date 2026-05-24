@@ -13,6 +13,7 @@ import com.ead.course.services.CourseUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,4 +49,14 @@ public class CourseUserServiceImpl implements CourseUserService {
 
         return courseUserModelSaved;
     }
+
+    @Override
+    public void deleteCourseUserByCourseId(UUID courseId) {
+        List<CourseUserModel> courseUserList = courseUserRepository.findAllByCourseCourseId(courseId);
+        if (!courseUserList.isEmpty()) {
+            courseUserRepository.deleteAllInBatch(courseUserList);
+        }
+    }
+
+
 }

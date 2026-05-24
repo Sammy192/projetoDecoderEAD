@@ -9,6 +9,7 @@ import com.ead.course.enums.UserTypeEnum;
 import com.ead.course.models.CourseModel;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
+import com.ead.course.services.CourseUserService;
 import com.ead.course.services.ModuleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,13 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleService moduleService;
     private final AuthUserClient authUserClient;
+    private final CourseUserService courseUserService;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, AuthUserClient authUserClient) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, AuthUserClient authUserClient, CourseUserService courseUserService) {
         this.courseRepository = courseRepository;
         this.moduleService = moduleService;
         this.authUserClient = authUserClient;
+        this.courseUserService = courseUserService;
     }
 
     @Transactional
@@ -39,6 +42,7 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(UUID courseId) {
         CourseModel courseModel = findById(courseId);
         moduleService.deleteAllByCourse(courseId);
+        courseUserService.deleteCourseUserByCourseId(courseId);
         courseRepository.delete(courseModel);
     }
 
