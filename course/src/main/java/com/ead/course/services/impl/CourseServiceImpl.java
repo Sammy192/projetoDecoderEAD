@@ -8,6 +8,7 @@ import com.ead.course.dto.UserDTO;
 import com.ead.course.enums.UserTypeEnum;
 import com.ead.course.models.CourseModel;
 import com.ead.course.repositories.CourseRepository;
+import com.ead.course.repositories.CourseUserRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.CourseUserService;
 import com.ead.course.services.ModuleService;
@@ -28,13 +29,13 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleService moduleService;
     private final AuthUserClient authUserClient;
-    private final CourseUserService courseUserService;
+    private final CourseUserRepository courseUserRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, AuthUserClient authUserClient, CourseUserService courseUserService) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, AuthUserClient authUserClient, CourseUserRepository courseUserRepository) {
         this.courseRepository = courseRepository;
         this.moduleService = moduleService;
         this.authUserClient = authUserClient;
-        this.courseUserService = courseUserService;
+        this.courseUserRepository = courseUserRepository;
     }
 
     @Transactional
@@ -42,7 +43,7 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(UUID courseId) {
         CourseModel courseModel = findById(courseId);
         moduleService.deleteAllByCourse(courseId);
-        courseUserService.deleteCourseUserByCourseId(courseId);
+        courseUserRepository.deleteAllByCourseCourseId(courseId);
         courseRepository.delete(courseModel);
     }
 

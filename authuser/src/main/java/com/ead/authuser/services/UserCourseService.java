@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface UserCourseService {
     UserCourseModel saveSubscriptionUserInCourse(UUID userId, UUID courseId);
+    void deleteUserCourseByUser(UUID userId);
 }

@@ -43,4 +43,11 @@ public class UserCourseServiceImpl implements UserCourseService {
         userCourseModel.setUser(userModel);
         return userCourseRepository.save(userCourseModel);
     }
+
+    @Override
+    @Transactional
+    public void deleteUserCourseByUser(UUID userId) {
+        userCourseRepository.deleteAllUserUserId(userId);
+    }
+
 }

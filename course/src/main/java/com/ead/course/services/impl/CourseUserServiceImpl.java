@@ -49,11 +49,4 @@ public class CourseUserServiceImpl implements CourseUserService {
 
         return courseUserModelSaved;
     }
-
-    @Override
-    public void deleteCourseUserByCourseId(UUID courseId) {
-        courseUserRepository.deleteAllByCourseCourseId(courseId);
-    }
-
-
 }

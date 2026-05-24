@@ -7,6 +7,7 @@ import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
+import com.ead.authuser.services.UserCourseService;
 import com.ead.authuser.services.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +28,11 @@ public class UserServiceImpl implements UserService {
     Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
+    private final UserCourseService userCourseService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserCourseService userCourseService) {
         this.userRepository = userRepository;
+        this.userCourseService = userCourseService;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(UserModel userModel) {
+        userCourseService.deleteUserCourseByUser(userModel.getUserId());
         userRepository.delete(userModel);
     }
 
