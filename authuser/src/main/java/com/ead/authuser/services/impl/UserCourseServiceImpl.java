@@ -44,10 +44,4 @@ public class UserCourseServiceImpl implements UserCourseService {
         return userCourseRepository.save(userCourseModel);
     }
 
-    @Override
-    @Transactional
-    public void deleteUserCourseByUser(UUID userId) {
-        userCourseRepository.deleteAllUserUserId(userId);
-    }
-
 }
