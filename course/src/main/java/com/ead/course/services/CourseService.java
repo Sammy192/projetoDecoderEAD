@@ -19,4 +19,6 @@ public interface CourseService {
     Page<CourseModel> findAll(Specification<CourseModel> spec, Pageable pageable);
 
     CourseModel updateCourse(UUID courseId, CourseDTO courseDto);
+
+    boolean existsByCourseId(UUID courseId);
 }

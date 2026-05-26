@@ -79,4 +79,9 @@ public class CourseServiceImpl implements CourseService {
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return courseRepository.save(courseModel);
     }
+
+    @Override
+    public boolean existsByCourseId(UUID courseId) {
+        return courseRepository.existsById(courseId);
+    }
 }
