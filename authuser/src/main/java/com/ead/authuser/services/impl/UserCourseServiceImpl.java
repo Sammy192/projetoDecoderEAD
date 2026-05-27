@@ -3,6 +3,7 @@ package com.ead.authuser.services.impl;
 import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.configs.exceptions.ConflictException;
 import com.ead.authuser.configs.exceptions.NotFoundException;
+import com.ead.authuser.dto.CourseDTO;
 import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.models.UserCourseModel;
 import com.ead.authuser.models.UserModel;
@@ -10,6 +11,8 @@ import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.services.UserCourseService;
 import com.ead.authuser.services.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -42,6 +45,12 @@ public class UserCourseServiceImpl implements UserCourseService {
         userCourseModel.setCourseId(courseId);
         userCourseModel.setUser(userModel);
         return userCourseRepository.save(userCourseModel);
+    }
+
+    @Override
+    public Page<CourseDTO> getAllCoursesByUser(UUID userId, Pageable pageable) {
+        if(!userService.existsByUserId(userId)) throw new NotFoundException("User not found.");
+        return courseClient.getAllCoursesByUser(userId, pageable);
     }
 
 }

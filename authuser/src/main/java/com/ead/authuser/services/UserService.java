@@ -27,4 +27,6 @@ public interface UserService {
     Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable);
 
     void promoteToInstructor(UUID userId);
+
+    Boolean existsByUserId(UUID userId);
 }

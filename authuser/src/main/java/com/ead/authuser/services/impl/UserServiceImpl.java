@@ -107,4 +107,9 @@ public class UserServiceImpl implements UserService {
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         userRepository.save(userModel);
     }
+
+    @Override
+    public Boolean existsByUserId(UUID userId) {
+        return userRepository.existsById(userId);
+    }
 }
