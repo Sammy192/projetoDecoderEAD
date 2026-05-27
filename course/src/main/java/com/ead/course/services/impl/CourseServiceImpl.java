@@ -45,6 +45,7 @@ public class CourseServiceImpl implements CourseService {
         moduleService.deleteAllByCourse(courseId);
         courseUserRepository.deleteAllByCourseCourseId(courseId);
         courseRepository.delete(courseModel);
+        authUserClient.deleteCourseInAuthUser(courseId);
     }
 
     @Override

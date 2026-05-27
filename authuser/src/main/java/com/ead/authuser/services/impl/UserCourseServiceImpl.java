@@ -53,4 +53,11 @@ public class UserCourseServiceImpl implements UserCourseService {
         return courseClient.getAllCoursesByUser(userId, pageable);
     }
 
+    @Override
+    @Transactional
+    public void deleteUserCourseByCourseId(UUID courseId) {
+        if(!userCourseRepository.existsByCourseId(courseId)) throw new NotFoundException("Any UserCourse register for this courseId was found.");
+        userCourseRepository.deleteAllByCourseId(courseId);
+    }
+
 }
