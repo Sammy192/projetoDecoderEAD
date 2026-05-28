@@ -56,4 +56,11 @@ public class CourseUserServiceImpl implements CourseUserService {
         if(!courseService.existsByCourseId(courseId)) throw new NotFoundException("Course not found.");
         return authUserClient.getAllUsersByCourse(courseId, pageable);
     }
+
+    @Override
+    @Transactional
+    public void deleteCourseUserByUserId(UUID userId) {
+        if(!courseUserRepository.existsByUserId(userId)) throw new NotFoundException("Any CourseUser register for this userId was found.");
+        courseUserRepository.deleteAllByUserId(userId);
+    }
 }

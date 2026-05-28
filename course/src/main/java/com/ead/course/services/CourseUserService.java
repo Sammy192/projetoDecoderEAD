@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface CourseUserService {
     CourseUserModel saveSubscriptionUserInCourse(UUID courseId, UUID uuid);
     Page<UserDTO> getAllUsersByCourse(UUID courseId, Pageable pageable);
+
+    void deleteCourseUserByUserId(UUID userId);
 }

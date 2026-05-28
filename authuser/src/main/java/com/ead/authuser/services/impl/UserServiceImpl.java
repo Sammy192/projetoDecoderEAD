@@ -1,5 +1,6 @@
 package com.ead.authuser.services.impl;
 
+import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.configs.exceptions.ConflictException;
 import com.ead.authuser.configs.exceptions.NotFoundException;
 import com.ead.authuser.dto.UserDTORequest;
@@ -9,6 +10,7 @@ import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
+import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -29,10 +31,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserCourseRepository userCourseRepository;
+    private final CourseClient courseClient;
 
-    public UserServiceImpl(UserRepository userRepository, UserCourseRepository userCourseRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserCourseRepository userCourseRepository, CourseClient courseClient) {
         this.userRepository = userRepository;
         this.userCourseRepository = userCourseRepository;
+        this.courseClient = courseClient;
     }
 
     @Override
@@ -46,9 +50,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(UserModel userModel) {
         userCourseRepository.deleteAllByUserUserId(userModel.getUserId());
         userRepository.delete(userModel);
+        courseClient.deleteUserInCourse(userModel.getUserId());
     }
 
     @Override
