@@ -2,16 +2,13 @@ package com.ead.authuser.models;
 
 import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -49,10 +46,6 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
 
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<UserCourseModel> usersCourses;
 
     public UUID getUserId() {
         return userId;
@@ -140,13 +133,5 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
 
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
-    }
-
-    public Set<UserCourseModel> getUsersCourses() {
-        return usersCourses;
-    }
-
-    public void setUsersCourses(Set<UserCourseModel> usersCourses) {
-        this.usersCourses = usersCourses;
     }
 }

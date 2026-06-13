@@ -7,7 +7,6 @@ import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
-import com.ead.authuser.repositories.UserCourseRepository;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import jakarta.transaction.Transactional;
@@ -30,12 +29,10 @@ public class UserServiceImpl implements UserService {
     Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
-    private final UserCourseRepository userCourseRepository;
     private final CourseClient courseClient;
 
-    public UserServiceImpl(UserRepository userRepository, UserCourseRepository userCourseRepository, CourseClient courseClient) {
+    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient) {
         this.userRepository = userRepository;
-        this.userCourseRepository = userCourseRepository;
         this.courseClient = courseClient;
     }
 
@@ -52,9 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void delete(UserModel userModel) {
-        userCourseRepository.deleteAllByUserUserId(userModel.getUserId());
         userRepository.delete(userModel);
-        courseClient.deleteUserInCourse(userModel.getUserId());
     }
 
     @Override
