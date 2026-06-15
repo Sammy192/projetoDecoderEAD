@@ -2,7 +2,6 @@ package com.ead.course.models;
 
 import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -59,10 +58,6 @@ public class CourseModel implements Serializable {
     // gera um comando de delete do pai e delega para o banco delete do cascade pois O Hibernate cria a tabela no banco de dados com a cláusula ON DELETE CASCADE na Foreign Key.
     //se usar o cascade = CascadeType.ALL, orphanRemoval = true, irá gerar 1 delete para cada filho e depois 1 para o pai. N + 1 instruções.
     private Set<ModuleModel> modules;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private Set<CourseUserModel> coursesUsers;
 
     public UUID getCourseId() {
         return courseId;
@@ -144,11 +139,4 @@ public class CourseModel implements Serializable {
         this.userInstructor = userInstructor;
     }
 
-    public Set<CourseUserModel> getCoursesUsers() {
-        return coursesUsers;
-    }
-
-    public void setCoursesUsers(Set<CourseUserModel> coursesUsers) {
-        this.coursesUsers = coursesUsers;
-    }
 }
