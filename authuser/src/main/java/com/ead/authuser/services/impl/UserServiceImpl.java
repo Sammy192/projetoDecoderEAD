@@ -4,9 +4,12 @@ import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.configs.exceptions.ConflictException;
 import com.ead.authuser.configs.exceptions.NotFoundException;
 import com.ead.authuser.dto.UserDTORequest;
+import com.ead.authuser.dto.UserEventDto;
+import com.ead.authuser.enums.ActionType;
 import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
+import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
 import com.ead.authuser.services.UserService;
 import jakarta.transaction.Transactional;
@@ -30,10 +33,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CourseClient courseClient;
+    private final UserEventPublisher userEventPublisher;
 
-    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient) {
+    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient, UserEventPublisher userEventPublisher) {
         this.userRepository = userRepository;
         this.courseClient = courseClient;
+        this.userEventPublisher = userEventPublisher;
     }
 
     @Override
@@ -53,11 +58,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserModel registerUser(UserDTORequest userDTORequest) {
         if(userRepository.existsByUsername(userDTORequest.username())){
             logger.warn("Username {} is already taken!", userDTORequest.username());
             throw new ConflictException("Error: Username já existe.");
-
         }
         if(userRepository.existsByEmail(userDTORequest.email())){
             logger.warn("Email {} is already taken!", userDTORequest.email());
@@ -70,7 +75,10 @@ public class UserServiceImpl implements UserService {
         userModel.setUserType(UserTypeEnum.USER);
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return userRepository.save(userModel);
+        userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.CREATE));
+        return userModel;
+
     }
 
     @Override
