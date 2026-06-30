@@ -1,6 +1,8 @@
 package com.ead.course.services.impl;
 
 import com.ead.course.configs.exceptions.NotFoundException;
+import com.ead.course.converters.UserConverter;
+import com.ead.course.dto.UserEventDTO;
 import com.ead.course.models.UserModel;
 import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.CourseService;
@@ -17,15 +19,23 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final CourseService courseService;
+    private final UserConverter userConverter;
 
-    public UserServiceImpl(UserRepository userRepository, CourseService courseService) {
+    public UserServiceImpl(UserRepository userRepository, CourseService courseService, UserConverter userConverter) {
         this.userRepository = userRepository;
         this.courseService = courseService;
+        this.userConverter = userConverter;
     }
 
     @Override
     public Page<UserModel> getAllUsersByCourse(Specification<UserModel> spec, Pageable pageable, UUID courseId) {
         if(!courseService.existsByCourseId(courseId)) throw new NotFoundException("Course not found.");
         return userRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public UserModel saveUser(UserEventDTO userEventDTO) {
+        UserModel userModel = userConverter.convertUserEventDtoToUserModel(userEventDTO);
+        return userRepository.save(userModel);
     }
 }
