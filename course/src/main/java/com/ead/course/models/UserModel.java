@@ -3,7 +3,6 @@ package com.ead.course.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -12,7 +11,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "TB_USERS")
-public class UserModel implements Serializable, Persistable<UUID> {
+public class UserModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -31,23 +30,6 @@ public class UserModel implements Serializable, Persistable<UUID> {
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Set<CourseModel> courses;
-
-    @Transient
-    private boolean isNew = true;
-
-    @Override
-    public UUID getId() {
-        return this.userId;
-    }
-
-    @Override
-    public boolean isNew() {
-        return this.isNew;
-    }
-
-    @PostPersist
-    @PostLoad
-    void markNotNew() { this.isNew = false; }
 
     public UUID getUserId() {
         return userId;

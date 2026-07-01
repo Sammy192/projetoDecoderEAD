@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void delete(UserModel userModel) {
         userRepository.delete(userModel);
+        userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.DELETE));
     }
 
     @Override
@@ -81,12 +82,15 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Transactional
     @Override
     public UserModel updateUser(UserDTORequest userDTORequest, UserModel userModel) {
         userModel.setFullName(userDTORequest.fullName());
         userModel.setPhoneNumber(userDTORequest.phoneNumber());
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return userRepository.save(userModel);
+        userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
+        return userModel;
     }
 
     @Override
@@ -96,11 +100,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userModel);
     }
 
+    @Transactional
     @Override
-    public UserModel updateImage(UserDTORequest userDTORequest, UserModel byId) {
-        byId.setImageUrl(userDTORequest.imageUrl());
-        byId.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return userRepository.save(byId);
+    public UserModel updateImage(UserDTORequest userDTORequest, UserModel userModel) {
+        userModel.setImageUrl(userDTORequest.imageUrl());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
+        return userModel;
     }
 
     @Override
@@ -108,6 +115,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(spec, pageable);
     }
 
+    @Transactional
     @Override
     public void promoteToInstructor(UUID userId) {
         UserModel userModel = findById(userId);
@@ -115,6 +123,7 @@ public class UserServiceImpl implements UserService {
         userModel.setUserType(UserTypeEnum.INSTRUCTOR);
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
     }
 
     @Override

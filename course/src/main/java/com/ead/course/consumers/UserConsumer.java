@@ -1,9 +1,7 @@
 package com.ead.course.consumers;
 
-import com.ead.course.converters.UserConverter;
 import com.ead.course.dto.UserEventDTO;
 import com.ead.course.enums.ActionType;
-import com.ead.course.models.UserModel;
 import com.ead.course.services.UserService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -30,7 +28,8 @@ public class UserConsumer {
     public void listenUserEvent(@Payload UserEventDTO userEventDTO) {
 
         switch (ActionType.valueOf(userEventDTO.actionType())) {
-            case CREATE -> userService.saveUser(userEventDTO);
+            case CREATE, UPDATE -> userService.saveUser(userEventDTO);
+            case DELETE -> userService.deleteUserById(userEventDTO.userId());
         }
 
 

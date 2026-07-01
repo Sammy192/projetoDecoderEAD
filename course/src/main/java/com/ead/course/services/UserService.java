@@ -12,4 +12,7 @@ public interface UserService {
     Page<UserModel> getAllUsersByCourse(Specification<UserModel> spec, Pageable pageable, UUID courseId);
 
     UserModel saveUser(UserEventDTO userEventDTO);
+
+    void deleteUserById(UUID userId);
+
 }
