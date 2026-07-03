@@ -1,5 +1,6 @@
 package com.ead.course.controllers;
 
+import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.SubscriptionDTO;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
@@ -29,8 +30,9 @@ public class CourseUserController {
     public ResponseEntity<Object> getAllUsersByCourse(SpecificationTemplate.UserSpec spec,
                                                       @PathVariable(value = "courseId") UUID courseId,
                                                       @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable) {
+        if(!courseService.existsByCourseId(courseId)) throw new NotFoundException("Course not found.");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.getAllUsersByCourse(SpecificationTemplate.userCourseId(courseId).and(spec), pageable, courseId));
+                .body(userService.getAllUsersByCourse(SpecificationTemplate.userCourseId(courseId).and(spec), pageable));
     }
 
     @PostMapping("/courses/{courseId}/users/subscription")

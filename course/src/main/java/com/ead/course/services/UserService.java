@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.UUID;
 
 public interface UserService {
-    Page<UserModel> getAllUsersByCourse(Specification<UserModel> spec, Pageable pageable, UUID courseId);
+    Page<UserModel> getAllUsersByCourse(Specification<UserModel> spec, Pageable pageable);
 
     UserModel saveUser(UserEventDTO userEventDTO);
 

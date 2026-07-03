@@ -75,4 +75,8 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.save(courseModel);
     }
 
+    @Override
+    public boolean existsByCourseId(UUID courseId) {
+        return courseRepository.existsById(courseId);
+    }
 }
