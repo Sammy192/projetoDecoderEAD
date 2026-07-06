@@ -3,6 +3,7 @@ package com.ead.course.services.impl;
 import com.ead.course.configs.exceptions.ConflictException;
 import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.CourseDTO;
+import com.ead.course.enums.UserStatusEnum;
 import com.ead.course.enums.UserTypeEnum;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.UserModel;
@@ -51,7 +52,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseModel saveCourse(CourseDTO courseDto) {
         if(courseRepository.existsByName(courseDto.name())) throw new ConflictException("Error: Course Name already exists.");
         UserModel userModel = userService.findById(courseDto.userInstructor());
-        if (!UserTypeEnum.INSTRUCTOR.name().equals(userModel.getUserType()) && !UserTypeEnum.ADMIN.name().equals(userModel.getUserType())) {
+        if (!UserTypeEnum.INSTRUCTOR.name().equalsIgnoreCase(userModel.getUserType()) && !UserTypeEnum.ADMIN.name().equalsIgnoreCase(userModel.getUserType())) {
             throw new ConflictException("User must be an INSTRUCTOR or ADMIN.");
         }
 
@@ -78,5 +79,19 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public boolean existsByCourseId(UUID courseId) {
         return courseRepository.existsById(courseId);
+    }
+
+    @Override
+    @Transactional
+    public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
+        CourseModel courseModel = courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found."));
+        if (courseRepository.existsByCourseIdAndUsersUserId(courseId, userId)) {
+            throw new ConflictException("Error: subscription already exists!");
+        }
+        UserModel userModel = userService.findById(userId);
+
+        if(UserStatusEnum.BLOCKED.name().equalsIgnoreCase(userModel.getUserStatus())) throw new ConflictException("User is blocked.");
+
+        courseRepository.saveSubscriptionUserInCourse(courseModel.getCourseId(), userModel.getUserId());
     }
 }
