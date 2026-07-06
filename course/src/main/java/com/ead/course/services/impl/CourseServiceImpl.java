@@ -40,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(UUID courseId) {
         CourseModel courseModel = findById(courseId);
         moduleService.deleteAllByCourse(courseId);
+        courseRepository.deleteSubscriptionsByCourseId(courseId);
         courseRepository.delete(courseModel);
     }
 

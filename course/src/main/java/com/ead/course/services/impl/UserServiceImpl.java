@@ -4,7 +4,6 @@ import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.UserEventDTO;
 import com.ead.course.models.UserModel;
 import com.ead.course.repositories.UserRepository;
-import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +39,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUserById(UUID userId) {
+        userRepository.deleteSubscriptionsByUserId(userId);
         userRepository.deleteById(userId);
     }
 
