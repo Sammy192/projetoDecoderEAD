@@ -2,17 +2,21 @@ package com.ead.authuser.clients;
 
 import com.ead.authuser.dto.CourseDTO;
 import com.ead.authuser.dto.ResponsePageDTO;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +35,7 @@ public class CourseClient {
         this.restClient = restClientBuilder.build();
     }
 
+    @Retry(name = "retryInstance", fallbackMethod = "fallbackForGetAllCoursesByUser")
     public Page<CourseDTO> getAllCoursesByUser(UUID userId, Pageable pageable) {
         String url  = baseUrlCourse + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size="
                 + pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replace(": ", ",");
@@ -48,6 +53,12 @@ public class CourseClient {
             throw new RuntimeException("Error Request RestClient", e);
         }
 
+    }
+
+    public Page<CourseDTO> fallbackForGetAllCoursesByUser(UUID userId, Pageable pageable, Throwable t) {
+        logger.error("Error Request RestClient with cause: {} ", t.toString());
+        List<CourseDTO> result = new ArrayList<>();
+        return new PageImpl<>(result);
     }
 
     public Optional<CourseDTO> getCourseById(UUID courseId) {
