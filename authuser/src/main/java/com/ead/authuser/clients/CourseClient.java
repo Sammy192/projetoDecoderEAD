@@ -2,7 +2,7 @@ package com.ead.authuser.clients;
 
 import com.ead.authuser.dto.CourseDTO;
 import com.ead.authuser.dto.ResponsePageDTO;
-import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +35,8 @@ public class CourseClient {
         this.restClient = restClientBuilder.build();
     }
 
-    @Retry(name = "retryInstance", fallbackMethod = "fallbackForGetAllCoursesByUser")
+    //@Retry(name = "retryInstance", fallbackMethod = "fallbackForGetAllCoursesByUser")
+    @CircuitBreaker(name = "circuitbreakerInstance", fallbackMethod = "fallbackForGetAllCoursesByUser")
     public Page<CourseDTO> getAllCoursesByUser(UUID userId, Pageable pageable) {
         String url  = baseUrlCourse + "/courses?userId=" + userId + "&page=" + pageable.getPageNumber() + "&size="
                 + pageable.getPageSize() + "&sort=" + pageable.getSort().toString().replace(": ", ",");
