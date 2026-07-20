@@ -14,7 +14,7 @@ services:
       - ./.data/postgresql/data:/var/lib/postgresql/data
     networks:
       - dev-network
-      
+
   # ====================================================================================================================
   # POSTGRES SERVER - ead-course
   # ====================================================================================================================
@@ -28,6 +28,21 @@ services:
       - 5432:5432
     volumes:
       - ./.data/postgresql/dataEadCourse:/var/lib/postgresql/dataEadCourse
+    networks:
+      - dev-network
+  # ====================================================================================================================
+  # POSTGRES SERVER - ead-notification
+  # ====================================================================================================================
+  pg-docker-ead-notification:
+    image: postgres:16-alpine
+    container_name: pg-ead-notification
+    environment:
+      POSTGRES_DB: ead-notification
+      POSTGRES_PASSWORD: 1234567
+    ports:
+      - 5434:5432
+    volumes:
+      - ./.data/postgresql/dataEadNotification:/var/lib/postgresql/dataEadNotification
     networks:
       - dev-network
   # ====================================================================================================================
