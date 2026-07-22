@@ -3,14 +3,18 @@ package com.ead.course.services.impl;
 import com.ead.course.configs.exceptions.ConflictException;
 import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.CourseDTO;
+import com.ead.course.dto.NotificationCommandDTO;
 import com.ead.course.enums.UserStatusEnum;
 import com.ead.course.enums.UserTypeEnum;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.UserModel;
+import com.ead.course.publishers.NotificationCommandPublischer;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import com.ead.course.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +29,18 @@ import java.util.UUID;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    Logger logger = LogManager.getLogger(CourseServiceImpl.class);
+
     private final CourseRepository courseRepository;
     private final ModuleService moduleService;
     private final UserService userService;
+    private final NotificationCommandPublischer notificationCommandPublischer;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, UserService userService) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, UserService userService, NotificationCommandPublischer notificationCommandPublischer) {
         this.courseRepository = courseRepository;
         this.moduleService = moduleService;
         this.userService = userService;
+        this.notificationCommandPublischer = notificationCommandPublischer;
     }
 
     @Transactional
@@ -94,5 +102,20 @@ public class CourseServiceImpl implements CourseService {
         if(UserStatusEnum.BLOCKED.name().equalsIgnoreCase(userModel.getUserStatus())) throw new ConflictException("User is blocked.");
 
         courseRepository.saveSubscriptionUserInCourse(courseModel.getCourseId(), userModel.getUserId());
+
+        enviaMensagemNotificacao(courseModel, userModel);
+
+    }
+
+    private void enviaMensagemNotificacao(CourseModel courseModel, UserModel userModel) {
+        try {
+            NotificationCommandDTO notificationCommandDTO = new NotificationCommandDTO(
+                    "Bem-Vindo(a) ao curso: " + courseModel.getName(),
+                    userModel.getFullName() + " a sua inscrição foi realizada com sucesso!",
+                    userModel.getUserId());
+            notificationCommandPublischer.publishNotificationCommand(notificationCommandDTO);
+        } catch (Exception e) {
+            logger.error("Error sending notification!");
+        }
     }
 }
