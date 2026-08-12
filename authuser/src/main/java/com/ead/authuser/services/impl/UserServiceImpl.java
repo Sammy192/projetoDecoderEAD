@@ -11,6 +11,7 @@ import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.publishers.UserEventPublisher;
 import com.ead.authuser.repositories.UserRepository;
+import com.ead.authuser.services.RoleService;
 import com.ead.authuser.services.UserService;
 import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,11 +36,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CourseClient courseClient;
     private final UserEventPublisher userEventPublisher;
+    private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient, UserEventPublisher userEventPublisher) {
+    public UserServiceImpl(UserRepository userRepository, CourseClient courseClient, UserEventPublisher userEventPublisher, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.courseClient = courseClient;
         this.userEventPublisher = userEventPublisher;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -76,6 +82,10 @@ public class UserServiceImpl implements UserService {
         userModel.setUserType(UserTypeEnum.USER);
         userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+
+        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        userModel.getRoles().add(roleService.findByRole(UserTypeEnum.USER));
+
         userRepository.save(userModel);
         userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.CREATE));
         return userModel;

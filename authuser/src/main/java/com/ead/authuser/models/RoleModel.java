@@ -1,6 +1,7 @@
 package com.ead.authuser.models;
 
 import com.ead.authuser.enums.UserTypeEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -20,6 +21,7 @@ public class RoleModel implements GrantedAuthority, Serializable {
     private UserTypeEnum role;
 
     @Override
+    @JsonIgnore
     public String getAuthority() {
         return this.role.name();
     }

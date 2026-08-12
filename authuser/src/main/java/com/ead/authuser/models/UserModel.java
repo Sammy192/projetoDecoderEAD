@@ -4,11 +4,14 @@ import com.ead.authuser.enums.UserStatusEnum;
 import com.ead.authuser.enums.UserTypeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -27,7 +30,7 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
     @Column(nullable = false, unique = true, length = 50)
     private String email;
     @JsonIgnore
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String password;
     @Column(nullable = false, length = 150)
     private String fullName;
@@ -46,6 +49,13 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
 
     @Column(nullable = false)
     private LocalDateTime lastUpdateDate;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TB_USERS_ROLES",
+        joinColumns = @JoinColumn(name ="user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleModel> roles = new HashSet<>();
 
     public UUID getUserId() {
         return userId;
@@ -133,5 +143,9 @@ public class UserModel extends RepresentationModel<UserModel> implements Seriali
 
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public Set<RoleModel> getRoles() {
+        return roles;
     }
 }
