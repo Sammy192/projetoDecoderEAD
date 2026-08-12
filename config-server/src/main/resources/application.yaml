@@ -13,6 +13,9 @@ spring:
           password: ${GITHUB_PASS}
 
 ead:
+  configServer:
+    username: configserver
+    password: 'ead123cs'
   serviceRegistry:
     username: serviceregistry
     password: 'ead123sr'
