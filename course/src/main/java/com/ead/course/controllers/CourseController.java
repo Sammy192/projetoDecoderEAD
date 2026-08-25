@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,12 +28,14 @@ public class CourseController {
         this.courseService = courseService;
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody @Valid CourseDTO courseDto) {
         CourseModel courseModel = courseService.saveCourse(courseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(courseModel);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping
     public ResponseEntity<Page<CourseModel>> getAllcourses(SpecificationTemplate.CourseSpec spec,
                                                            Pageable pageable,
@@ -41,11 +44,13 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(courseModels);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/{courseId}")
     public ResponseEntity<Object> getOneCourse(@PathVariable(value = "courseId") UUID courseId) {
         return ResponseEntity.status(HttpStatus.OK).body(courseService.findById(courseId));
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @DeleteMapping("/{courseId}")
     public ResponseEntity<Object> deleteCourse(@PathVariable(value = "courseId") UUID courseId) {
         logger.debug("DELETE deleteCourse courseId received {} ", courseId);
@@ -53,6 +58,7 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body("Course deleted successfully.");
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PutMapping("/{courseId}")
     public ResponseEntity<Object> updateCourse(@PathVariable(value = "courseId") UUID courseId,
                                                @RequestBody @Valid CourseDTO courseDto) {

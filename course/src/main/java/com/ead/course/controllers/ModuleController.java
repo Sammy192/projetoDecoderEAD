@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class ModuleController {
         this.moduleService = moduleService;
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PostMapping("/courses/{courseId}/modules")
     public ResponseEntity<Object> saveModuleIntoCourse(@PathVariable(value = "courseId") UUID courseId,
                                                        @RequestBody @Valid ModuleDTO moduleDto) {
@@ -34,6 +36,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(moduleModel);
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/courses/{courseId}/modules")
     public ResponseEntity<Page<ModuleModel>> findAllModulesByCourseId(@PathVariable(value = "courseId") UUID courseId,
                                                                       SpecificationTemplate.ModuleSpec spec, Pageable pageable) {
@@ -41,6 +44,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.OK).body(moduleService.findAllModulesByCourseId(SpecificationTemplate.moduleCourseId(courseId).and(spec), pageable));
     }
 
+    @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> findModuleByIdIntoCourse(@PathVariable(value = "courseId") UUID courseId,
                                                            @PathVariable(value = "moduleId") UUID moduleId) {
@@ -48,6 +52,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.OK).body(moduleService.findModuleByIdIntoCourse(courseId, moduleId));
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> deleteModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId) {
@@ -56,6 +61,7 @@ public class ModuleController {
         return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully.");
     }
 
+    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PutMapping("/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Object> updateModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId,
