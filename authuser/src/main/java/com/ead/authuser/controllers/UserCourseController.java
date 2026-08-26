@@ -42,7 +42,7 @@ public class UserCourseController {
 
         if (!isUserAdmin && !loggedInUser.getUserId().equals(userId)) {
             //Disparar e tratar erro com a msg ou pode usar regra na notacao preAuthorize
-            throw new AccessDeniedException("Somente admin ou próprio usuário podem acessar este recurso.");
+            throw new AccessDeniedException("Acesso permitido somente para admin ou próprio usuário.");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(courseClient.getAllCoursesByUser(userId, pageable, token));

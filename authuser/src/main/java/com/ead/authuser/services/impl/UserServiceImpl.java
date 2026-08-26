@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel updatePassword(UserDTORequest userDTORequest, UserModel userModel) {
-        userModel.setPassword(userDTORequest.password());
+        userModel.setPassword(passwordEncoder.encode(userDTORequest.password()));
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return userRepository.save(userModel);
     }
@@ -127,12 +127,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void promoteToInstructor(UUID userId) {
+    public void updateUserType(UUID userId, UserTypeEnum userTypeEnum) {
         UserModel userModel = findById(userId);
-        if (UserTypeEnum.INSTRUCTOR.equals(userModel.getUserType())) return;
-        userModel.setUserType(UserTypeEnum.INSTRUCTOR);
+        if (userModel.getUserType().equals(userTypeEnum)) return;
+
+        userModel.setUserType(userTypeEnum);
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        userModel.getRoles().add(roleService.findByRole(UserTypeEnum.INSTRUCTOR));
+        userModel.getRoles().clear();
+        userModel.getRoles().add(roleService.findByRole(userTypeEnum));
         userRepository.save(userModel);
         userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
     }

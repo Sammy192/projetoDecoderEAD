@@ -12,7 +12,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,5 +56,21 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage(), null);
         logger.error("AccesDeniedException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String paramName = ex.getName();
+        Object invalidValue = ex.getValue();
+
+        String message = String.format("O parâmetro '%s' recebeu um valor inválido: '%s'.", paramName, invalidValue);
+
+        if (ex.getRequiredType().isEnum()) {
+            String possibleValues = Arrays.toString(ex.getRequiredType().getEnumConstants());
+            message += String.format(" Os valores aceitos são: %s.", possibleValues);
+        }
+
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message, null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

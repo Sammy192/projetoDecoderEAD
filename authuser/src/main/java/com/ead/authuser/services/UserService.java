@@ -1,6 +1,7 @@
 package com.ead.authuser.services;
 
 import com.ead.authuser.dto.UserDTORequest;
+import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,7 @@ public interface UserService {
 
     Page<UserModel> findAll(Specification<UserModel> spec, Pageable pageable);
 
-    void promoteToInstructor(UUID userId);
+    void updateUserType(UUID userId, UserTypeEnum userTypeEnum);
 
     Boolean existsByUserId(UUID userId);
 }

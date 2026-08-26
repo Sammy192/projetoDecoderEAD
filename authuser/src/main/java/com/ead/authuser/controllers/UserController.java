@@ -3,6 +3,7 @@ package com.ead.authuser.controllers;
 import com.ead.authuser.configs.security.AuthenticationCurrentUserService;
 import com.ead.authuser.configs.security.UserDetailsImpl;
 import com.ead.authuser.dto.UserDTORequest;
+import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import com.ead.authuser.specifications.SpecificationTemplate;
@@ -17,6 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +33,14 @@ public class UserController {
 
     Logger logger = LogManager.getLogger(UserController.class);
 
-    final UserService userService;
-    final AuthenticationCurrentUserService authenticationCurrentUserService;
+    private final UserService userService;
+    private final AuthenticationCurrentUserService authenticationCurrentUserService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, AuthenticationCurrentUserService authenticationCurrentUserService) {
+    public UserController(UserService userService, AuthenticationCurrentUserService authenticationCurrentUserService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.authenticationCurrentUserService = authenticationCurrentUserService;
+        this.passwordEncoder = passwordEncoder;
     }
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
@@ -53,7 +57,7 @@ public class UserController {
         return ResponseEntity.ok(userModelPage);
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getOneUser(@PathVariable(value = "userId") UUID userId) {
         UUID currrentUserId = authenticationCurrentUserService.getCurrentUser().getUserId();
@@ -65,6 +69,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @DeleteMapping("/{userId}")
     public ResponseEntity<Object> deleteUser(@PathVariable(value = "userId") UUID userId) {
         logger.debug("DELETE deleteUser userId received {} ", userId);
@@ -72,6 +77,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @PutMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@PathVariable(value = "userId") UUID userId,
                                              @RequestBody @Validated(UserDTORequest.UserView.UserPut.class)
@@ -82,6 +88,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userModel);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @PutMapping("/{userId}/password")
     public ResponseEntity<Object> updatePassword(@PathVariable(value = "userId") UUID userId,
                                              @RequestBody @Validated(UserDTORequest.UserView.PasswordPut.class)
@@ -89,7 +96,7 @@ public class UserController {
                                              UserDTORequest userDTORequest) {
         logger.debug("PUT updatePassord userId received {} ", userId);
         UserModel userModel = userService.findById(userId);
-        if (!userModel.getPassword().equals(userDTORequest.oldPassword())) {
+        if (!passwordEncoder.matches(userDTORequest.oldPassword(), userModel.getPassword())) {
             logger.warn("Mismatched old password! userId {}", userId);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password!");
         }
@@ -97,6 +104,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully.");
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @PutMapping("/{userId}/image")
     public ResponseEntity<Object> updateImage(@PathVariable(value = "userId") UUID userId,
                                              @RequestBody @Validated(UserDTORequest.UserView.ImagePut.class)
@@ -109,11 +117,11 @@ public class UserController {
 
 
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping("/{userId}/instructor")
-    public ResponseEntity<Object> promoteToInstructor(@PathVariable(value = "userId") UUID userId) {
-        logger.debug("PUT promoteToInstructor userId received {} ", userId);
-        userService.promoteToInstructor(userId);
+    @PutMapping("/{userId}/usertype")
+    public ResponseEntity<Void> updateUserType(@PathVariable(value = "userId") UUID userId,
+                                                 @RequestParam(value = "userType", defaultValue = "USER") UserTypeEnum userTypeEnum) {
+        userService.updateUserType(userId, userTypeEnum);
 
-        return ResponseEntity.status(HttpStatus.OK).body("User promoted to instructor successfully.");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
