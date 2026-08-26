@@ -132,6 +132,7 @@ public class UserServiceImpl implements UserService {
         if (UserTypeEnum.INSTRUCTOR.equals(userModel.getUserType())) return;
         userModel.setUserType(UserTypeEnum.INSTRUCTOR);
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.getRoles().add(roleService.findByRole(UserTypeEnum.INSTRUCTOR));
         userRepository.save(userModel);
         userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
     }

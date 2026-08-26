@@ -108,6 +108,7 @@ public class UserController {
     }
 
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping("/{userId}/instructor")
     public ResponseEntity<Object> promoteToInstructor(@PathVariable(value = "userId") UUID userId) {
         logger.debug("PUT promoteToInstructor userId received {} ", userId);
