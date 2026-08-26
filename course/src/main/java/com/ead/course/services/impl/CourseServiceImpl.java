@@ -2,6 +2,8 @@ package com.ead.course.services.impl;
 
 import com.ead.course.configs.exceptions.ConflictException;
 import com.ead.course.configs.exceptions.NotFoundException;
+import com.ead.course.configs.security.AuthenticationCurrentUserService;
+import com.ead.course.configs.security.UserDetailsImpl;
 import com.ead.course.dto.CourseDTO;
 import com.ead.course.dto.NotificationCommandDTO;
 import com.ead.course.enums.UserStatusEnum;
@@ -19,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +38,14 @@ public class CourseServiceImpl implements CourseService {
     private final ModuleService moduleService;
     private final UserService userService;
     private final NotificationCommandPublischer notificationCommandPublischer;
+    private final AuthenticationCurrentUserService authenticationCurrentUserService;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, UserService userService, NotificationCommandPublischer notificationCommandPublischer) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, UserService userService, NotificationCommandPublischer notificationCommandPublischer, AuthenticationCurrentUserService authenticationCurrentUserService) {
         this.courseRepository = courseRepository;
         this.moduleService = moduleService;
         this.userService = userService;
         this.notificationCommandPublischer = notificationCommandPublischer;
+        this.authenticationCurrentUserService = authenticationCurrentUserService;
     }
 
     @Transactional
@@ -59,10 +64,20 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseModel saveCourse(CourseDTO courseDto) {
-        if(courseRepository.existsByName(courseDto.name())) throw new ConflictException("Error: Course Name already exists.");
-        UserModel userModel = userService.findById(courseDto.userInstructor());
-        if (!UserTypeEnum.INSTRUCTOR.name().equalsIgnoreCase(userModel.getUserType()) && !UserTypeEnum.ADMIN.name().equalsIgnoreCase(userModel.getUserType())) {
-            throw new ConflictException("User must be an INSTRUCTOR or ADMIN.");
+        if (courseRepository.existsByName(courseDto.name())) {
+            throw new ConflictException("Error: Course Name already exists.");
+        }
+
+        UserModel instructorUser = userService.findById(courseDto.userInstructor());
+        if (!UserTypeEnum.INSTRUCTOR.name().equalsIgnoreCase(instructorUser.getUserType()) && !UserTypeEnum.ADMIN.name().equalsIgnoreCase(instructorUser.getUserType())) {
+            throw new ConflictException("User to be assigned as instructor must be of type INSTRUCTOR or ADMIN.");
+        }
+
+        UserDetailsImpl loggedInUser = authenticationCurrentUserService.getCurrentUser();
+        boolean isUserAdmin = loggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
+        if (!isUserAdmin && !loggedInUser.getUserId().equals(instructorUser.getUserId())) {
+            throw new ConflictException("An instructor is only allowed to create courses for themselves.");
         }
 
         CourseModel courseModel = new CourseModel();

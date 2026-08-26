@@ -28,7 +28,7 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody @Valid CourseDTO courseDto) {
         CourseModel courseModel = courseService.saveCourse(courseDto);
