@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration>
+    <Appenders>
+        <RollingFile
+                name="ECS_FILE"
+                fileName="../logs/ead-course/ead-course-service.log"
+                filePattern="../logs/ead-course/ead-course-service-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <EcsLayout
+                    serviceName="ead-course"
+                    serviceVersion="1.0.0"
+                    serviceEnvironment="local"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+
+            <DefaultRolloverStrategy max="10"/>
+
+        </RollingFile>
+
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="ECS_FILE"/>
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+    </Loggers>
+</Configuration>
