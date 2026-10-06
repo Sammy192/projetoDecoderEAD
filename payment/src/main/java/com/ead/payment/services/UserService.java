@@ -9,6 +9,7 @@ import java.util.UUID;
 public interface UserService {
 
     UserModel saveUser(UserEventDTO userEventDTO);
+    UserModel updateUser(UserEventDTO userEventDTO);
 
     void deleteUserById(UUID userId);
 

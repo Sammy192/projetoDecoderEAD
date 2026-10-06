@@ -3,6 +3,7 @@ package com.ead.payment.services.impl;
 
 
 import com.ead.payment.dto.UserEventDTO;
+import com.ead.payment.enums.PaymentStatusEnum;
 import com.ead.payment.models.UserModel;
 import com.ead.payment.repositories.UserRepository;
 import com.ead.payment.services.UserService;
@@ -24,6 +25,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserModel saveUser(UserEventDTO userEventDTO) {
+        UserModel userModel = new UserModel();
+        BeanUtils.copyProperties(userEventDTO, userModel);
+        userModel.setPaymentStatus(PaymentStatusEnum.PENDING);
+        return userRepository.save(userModel);
+    }
+
+    @Transactional
+    @Override
+    public UserModel updateUser(UserEventDTO userEventDTO) {
         UserModel userModel = new UserModel();
         BeanUtils.copyProperties(userEventDTO, userModel);
         return userRepository.save(userModel);

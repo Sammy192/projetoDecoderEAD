@@ -27,7 +27,8 @@ public class UserConsumer {
     )
     public void listenUserEvent(@Payload UserEventDTO userEventDTO) {
         switch (ActionType.valueOf(userEventDTO.actionType())) {
-            case CREATE, UPDATE -> userService.saveUser(userEventDTO);
+            case CREATE -> userService.saveUser(userEventDTO);
+            case UPDATE -> userService.updateUser(userEventDTO);
             case DELETE -> userService.deleteUserById(userEventDTO.userId());
         }
     }
