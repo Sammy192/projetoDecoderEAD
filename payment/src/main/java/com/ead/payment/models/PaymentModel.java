@@ -20,7 +20,6 @@ public class PaymentModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID paymentId;
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatusControlEnum paymentControl;
     @Column(nullable = false)

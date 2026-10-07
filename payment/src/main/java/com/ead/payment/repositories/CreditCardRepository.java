@@ -11,5 +11,5 @@ import java.util.UUID;
 
 @Repository
 public interface CreditCardRepository extends JpaRepository<CreditCardModel, UUID>, JpaSpecificationExecutor<CreditCardModel> {
-
+    Optional<CreditCardModel> findByUser(UserModel userModel);
 }

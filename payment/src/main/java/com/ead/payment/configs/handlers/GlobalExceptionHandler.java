@@ -1,5 +1,6 @@
 package com.ead.payment.configs.handlers;
 
+import com.ead.payment.configs.exceptions.BusinessException;
 import com.ead.payment.configs.exceptions.ConflictException;
 import com.ead.payment.configs.exceptions.NotFoundException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -73,6 +74,13 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage(), null);
         logger.error("ConflictException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleConflictException(BusinessException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), ex.getMessage(), null);
+        logger.error(": {BusinessException}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorResponse);
     }
 
 

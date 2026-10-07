@@ -31,7 +31,6 @@ public class UserModel implements Serializable {
     @Column(length = 20)
     private String phoneNumber;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatusEnum paymentStatus;
     @Column

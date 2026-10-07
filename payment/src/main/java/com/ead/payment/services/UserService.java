@@ -13,5 +13,5 @@ public interface UserService {
 
     void deleteUserById(UUID userId);
 
-    //UserModel findById(UUID userId);
+    UserModel findById(UUID userId);
 }

@@ -2,6 +2,7 @@ package com.ead.payment.services.impl;
 
 
 
+import com.ead.payment.configs.exceptions.NotFoundException;
 import com.ead.payment.dto.UserEventDTO;
 import com.ead.payment.enums.PaymentStatusEnum;
 import com.ead.payment.models.UserModel;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
     public UserModel saveUser(UserEventDTO userEventDTO) {
         UserModel userModel = new UserModel();
         BeanUtils.copyProperties(userEventDTO, userModel);
-        userModel.setPaymentStatus(PaymentStatusEnum.PENDING);
+        //userModel.setPaymentStatus(PaymentStatusEnum.PENDING);
         return userRepository.save(userModel);
     }
 
@@ -45,9 +46,9 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-   /* @Override
+    @Override
     public UserModel findById(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found."));
-    }*/
+    }
 
 }
