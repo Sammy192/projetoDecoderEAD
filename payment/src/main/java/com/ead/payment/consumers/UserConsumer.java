@@ -1,4 +1,4 @@
-package com.ead.payment.cosumers;
+package com.ead.payment.consumers;
 
 import com.ead.payment.dto.UserEventDTO;
 import com.ead.payment.enums.ActionType;
