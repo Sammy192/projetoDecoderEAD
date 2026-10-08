@@ -1,6 +1,7 @@
 package com.ead.payment.services.impl;
 
 import com.ead.payment.configs.exceptions.BusinessException;
+import com.ead.payment.configs.exceptions.NotFoundException;
 import com.ead.payment.dto.PaymentRequestDTO;
 import com.ead.payment.enums.PaymentStatusControlEnum;
 import com.ead.payment.models.CreditCardModel;
@@ -84,5 +85,11 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Page<PaymentModel> findAllByUser(Specification<PaymentModel> spec, Pageable pageable) {
         return paymentRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public PaymentModel findPaymentByUser(UUID userId, UUID paymentId) {
+        Optional<PaymentModel> paymentModelOptional = paymentRepository.findByUserUserIdAndPaymentId(userId, paymentId);
+        return paymentModelOptional.orElseThrow(() -> new NotFoundException("Error: Payment not found for this user."));
     }
 }

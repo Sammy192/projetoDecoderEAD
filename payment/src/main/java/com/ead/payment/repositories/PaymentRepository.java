@@ -13,4 +13,6 @@ import java.util.UUID;
 public interface PaymentRepository extends JpaRepository<PaymentModel, UUID>, JpaSpecificationExecutor<PaymentModel> {
 
     Optional<PaymentModel> findTopByUserOrderByPaymentRequestDateDesc(UserModel userModel);
+
+    Optional<PaymentModel> findByUserUserIdAndPaymentId(UUID userId, UUID paymentId);
 }
