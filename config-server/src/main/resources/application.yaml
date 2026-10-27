@@ -26,3 +26,6 @@ eureka:
       defaultZone: 'http://${ead.serviceRegistry.username}:${ead.serviceRegistry.password}@localhost:8761/eureka'
   instance:
     hostname: localhost
+
+encrypt:
+  key: bf4d318da6962b28c8209d89db22e9fe2b3be20b2b6de9e38e56ca1b40547e5f

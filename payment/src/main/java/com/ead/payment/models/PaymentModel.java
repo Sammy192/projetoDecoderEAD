@@ -32,7 +32,7 @@ public class PaymentModel implements Serializable {
     private String lastDigitsCreditCard;
     @Column(nullable = false)
     private BigDecimal valuePaid;
-    @Column(length = 150)
+    @Column(length = 255)
     private String paymentMessage;
     @Column
     private boolean recurrence;

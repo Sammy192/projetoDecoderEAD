@@ -1,6 +1,6 @@
 package com.ead.payment.models;
 
-import com.ead.payment.enums.PaymentStatusEnum;
+import com.ead.payment.enums.PaymentStatusControlEnum;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -32,11 +32,13 @@ public class UserModel implements Serializable {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatusEnum paymentStatus;
+    private PaymentStatusControlEnum paymentStatus;
     @Column
     private LocalDateTime paymentExpirationDate;
     @Column
     private LocalDateTime lastPaymentDate;
+    @Column
+    private LocalDateTime firstPaymentDate;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY )
@@ -91,11 +93,11 @@ public class UserModel implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public PaymentStatusEnum getPaymentStatus() {
+    public PaymentStatusControlEnum getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(PaymentStatusEnum paymentStatus) {
+    public void setPaymentStatus(PaymentStatusControlEnum paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 
@@ -121,5 +123,13 @@ public class UserModel implements Serializable {
 
     public void setPayments(Set<PaymentModel> payments) {
         this.payments = payments;
+    }
+
+    public LocalDateTime getFirstPaymentDate() {
+        return firstPaymentDate;
+    }
+
+    public void setFirstPaymentDate(LocalDateTime firstPaymentDate) {
+        this.firstPaymentDate = firstPaymentDate;
     }
 }

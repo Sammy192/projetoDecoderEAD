@@ -4,7 +4,6 @@ package com.ead.payment.services.impl;
 
 import com.ead.payment.configs.exceptions.NotFoundException;
 import com.ead.payment.dto.UserEventDTO;
-import com.ead.payment.enums.PaymentStatusEnum;
 import com.ead.payment.models.UserModel;
 import com.ead.payment.repositories.UserRepository;
 import com.ead.payment.services.UserService;
