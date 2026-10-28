@@ -1,6 +1,7 @@
 package com.ead.payment.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.annotations.Where;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "TB_CREDIT_CARDS")
+@Where(clause = "deleted = false")
 public class CreditCardModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +27,8 @@ public class CreditCardModel implements Serializable {
     private String expirationDate;
     @Column(nullable = false, length = 3)
     private String cvvCode;
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique=true, nullable = false)
@@ -84,5 +88,13 @@ public class CreditCardModel implements Serializable {
 
     public void setUser(UserModel user) {
         this.user = user;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

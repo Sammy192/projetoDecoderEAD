@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Where;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "TB_USERS")
+@Where(clause = "deleted = false")
 public class UserModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -39,11 +41,14 @@ public class UserModel implements Serializable {
     private LocalDateTime lastPaymentDate;
     @Column
     private LocalDateTime firstPaymentDate;
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     private Set<PaymentModel> payments;
+
 
     public UUID getUserId() {
         return userId;
@@ -131,5 +136,13 @@ public class UserModel implements Serializable {
 
     public void setFirstPaymentDate(LocalDateTime firstPaymentDate) {
         this.firstPaymentDate = firstPaymentDate;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

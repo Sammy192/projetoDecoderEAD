@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -60,13 +59,8 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getOneUser(@PathVariable(value = "userId") UUID userId) {
-        UUID currrentUserId = authenticationCurrentUserService.getCurrentUser().getUserId();
-        if (currrentUserId.equals(userId)) {
-            UserModel userModelOptional = userService.findById(userId);
-            return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
-        } else {
-            throw new AccessDeniedException("Forbidden");
-        }
+        UserModel userModelOptional = userService.findById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userModelOptional);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
