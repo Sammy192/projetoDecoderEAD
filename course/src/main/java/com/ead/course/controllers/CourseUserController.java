@@ -37,7 +37,7 @@ public class CourseUserController {
                 .body(userService.getAllUsersByCourse(SpecificationTemplate.userCourseId(courseId).and(spec), pageable));
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @PostMapping("/courses/{courseId}/users/subscription")
     public ResponseEntity<Object> saveSubscriptionUserInCourse(@PathVariable(value = "courseId") UUID courseId,
                                                                @RequestBody @Valid SubscriptionDTO subscriptionDTO) {

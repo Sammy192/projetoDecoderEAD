@@ -36,7 +36,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonModel);
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/modules/{moduleId}/lessons")
     public ResponseEntity<Page<LessonModel>> findAllLessonsByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
                                                                       SpecificationTemplate.LessonSpec spec, Pageable pageable) {
@@ -44,7 +44,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.OK).body(lessonService.findAllLessonsByModuleId(SpecificationTemplate.lessonModuleId(moduleId).and(spec), pageable));
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<Object> getOneLessonByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
                                                          @PathVariable(value = "lessonId") UUID lessonId) {
