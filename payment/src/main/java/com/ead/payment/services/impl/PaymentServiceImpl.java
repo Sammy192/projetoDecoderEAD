@@ -3,12 +3,14 @@ package com.ead.payment.services.impl;
 import com.ead.payment.configs.exceptions.BusinessException;
 import com.ead.payment.configs.exceptions.NotFoundException;
 import com.ead.payment.dto.PaymentCommandDTO;
+import com.ead.payment.dto.PaymentEventDTO;
 import com.ead.payment.dto.PaymentRequestDTO;
 import com.ead.payment.enums.PaymentStatusControlEnum;
 import com.ead.payment.models.CreditCardModel;
 import com.ead.payment.models.PaymentModel;
 import com.ead.payment.models.UserModel;
 import com.ead.payment.publishers.PaymentCommandPublisher;
+import com.ead.payment.publishers.PaymentEventPublisher;
 import com.ead.payment.repositories.CreditCardRepository;
 import com.ead.payment.repositories.PaymentRepository;
 import com.ead.payment.repositories.UserRepository;
@@ -41,15 +43,17 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserService userService;
     private final PaymentCommandPublisher paymentCommandPublisher;
     private final StripePaymentService stripePaymentService;
+    private final PaymentEventPublisher paymentEventPublisher;
 
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository, UserRepository userRepository, CreditCardRepository creditCardRepository, UserService userService, PaymentCommandPublisher paymentCommandPublisher, StripePaymentService stripePaymentService) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, UserRepository userRepository, CreditCardRepository creditCardRepository, UserService userService, PaymentCommandPublisher paymentCommandPublisher, StripePaymentService stripePaymentService, PaymentEventPublisher paymentEventPublisher) {
         this.paymentRepository = paymentRepository;
         this.userRepository = userRepository;
         this.creditCardRepository = creditCardRepository;
         this.userService = userService;
         this.paymentCommandPublisher = paymentCommandPublisher;
         this.stripePaymentService = stripePaymentService;
+        this.paymentEventPublisher = paymentEventPublisher;
     }
 
     @Override
@@ -136,15 +140,25 @@ public class PaymentServiceImpl implements PaymentService {
         paymentModel = stripePaymentService.processStripePayment(paymentModel, creditCardModel);
         paymentRepository.save(paymentModel);
 
+        updateUserInformation(paymentModel, userModel);
+
+        produceUserPaymentEvent(paymentModel);
+    }
+
+    private void updateUserInformation(PaymentModel paymentModel, UserModel userModel) {
+        userModel.setPaymentStatus(paymentModel.getPaymentControl());
+
         if(PaymentStatusControlEnum.APPROVED.equals(paymentModel.getPaymentControl())) {
-            userModel.setPaymentStatus(PaymentStatusControlEnum.APPROVED);
             userModel.setLastPaymentDate(LocalDateTime.now(ZoneId.of("UTC")));
             userModel.setPaymentExpirationDate(LocalDateTime.now(ZoneId.of("UTC")).plusMonths(12));
             if(Objects.isNull(userModel.getFirstPaymentDate())) {
                 userModel.setFirstPaymentDate(LocalDateTime.now(ZoneId.of("UTC")));
             }
-        } else {
-            userModel.setPaymentStatus(PaymentStatusControlEnum.PENDING);
         }
+        userRepository.save(userModel);
+    }
+
+    private void produceUserPaymentEvent(PaymentModel paymentModel) {
+            paymentEventPublisher.publishPaymentEvent(new PaymentEventDTO(paymentModel));
     }
 }

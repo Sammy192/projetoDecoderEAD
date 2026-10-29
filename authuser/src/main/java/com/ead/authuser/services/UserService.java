@@ -30,4 +30,6 @@ public interface UserService {
     void updateUserType(UUID userId, UserTypeEnum userTypeEnum);
 
     Boolean existsByUserId(UUID userId);
+
+    UserModel updateUser(UserModel userModel);
 }

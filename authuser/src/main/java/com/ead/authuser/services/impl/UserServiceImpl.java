@@ -143,4 +143,12 @@ public class UserServiceImpl implements UserService {
     public Boolean existsByUserId(UUID userId) {
         return userRepository.existsById(userId);
     }
+
+    @Transactional
+    @Override
+    public UserModel updateUser(UserModel userModel) {
+        userRepository.save(userModel);
+        userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
+        return userModel;
+    }
 }
