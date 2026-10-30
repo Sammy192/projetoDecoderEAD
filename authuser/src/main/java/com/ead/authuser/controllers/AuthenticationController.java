@@ -4,6 +4,8 @@ import com.ead.authuser.configs.security.JwtProvider;
 import com.ead.authuser.dto.JwtDTO;
 import com.ead.authuser.dto.LoginDTO;
 import com.ead.authuser.dto.UserDTORequest;
+import com.ead.authuser.dto.UserResponseDTO;
+import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -39,11 +41,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> registerUser(@RequestBody @Validated(UserDTORequest.UserView.RegistrationPost.class)
-                                               @JsonView(UserDTORequest.UserView.RegistrationPost.class)
-                                               UserDTORequest userDTORequest) {
+    public ResponseEntity<UserResponseDTO> registerUser(@RequestBody @Validated(UserDTORequest.UserView.RegistrationPost.class)
+                                                        @JsonView(UserDTORequest.UserView.RegistrationPost.class)
+                                                        UserDTORequest userDTORequest) {
         logger.debug("POST registerUser userDto received {} ", userDTORequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(userDTORequest));
+        UserModel userModel = userService.registerUser(userDTORequest);
+        UserResponseDTO responseDTO = new UserResponseDTO(userModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     @PostMapping("/login")

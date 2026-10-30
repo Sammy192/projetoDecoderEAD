@@ -2,7 +2,9 @@ package com.ead.authuser.configs.handlers;
 
 import com.ead.authuser.configs.exceptions.ConflictException;
 import com.ead.authuser.configs.exceptions.NotFoundException;
-import com.ead.authuser.controllers.AuthenticationController;
+import com.ead.authuser.dto.error.CustomErrorDTO;
+import com.ead.authuser.dto.error.ValidationErrorDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -14,9 +16,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,53 +25,55 @@ public class GlobalExceptionHandler {
     Logger logger = LogManager.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
-        logger.error("NotFoundException: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    public ResponseEntity<CustomErrorDTO> handleNotFoundException(NotFoundException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        CustomErrorDTO err = new CustomErrorDTO(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
+        logger.error("NotFoundException: {} on path {}", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Error: Validation failed", errors);
-        logger.error("MethodArgumentNotValidException: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    public ResponseEntity<CustomErrorDTO> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY; // 422 is more specific for validation
+        ValidationErrorDTO err = new ValidationErrorDTO(Instant.now(), status.value(), "Dados inválidos", request.getRequestURI());
+        for (FieldError f : ex.getBindingResult().getFieldErrors()) {
+            err.addError(f.getField(), f.getDefaultMessage());
+        }
+        logger.error("MethodArgumentNotValidException: {} on path {}", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage(), null);
-        logger.error("ConflictException: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    public ResponseEntity<CustomErrorDTO> handleConflictException(ConflictException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        CustomErrorDTO err = new CustomErrorDTO(Instant.now(), status.value(), ex.getMessage(), request.getRequestURI());
+        logger.error("ConflictException: {} on path {}", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccesDeniedException(AccessDeniedException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.FORBIDDEN.value(), ex.getMessage(), null);
-        logger.error("AccesDeniedException: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    public ResponseEntity<CustomErrorDTO> handleAccesDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        CustomErrorDTO err = new CustomErrorDTO(Instant.now(), status.value(), "Acesso negado", request.getRequestURI());
+        logger.error("AccessDeniedException: {} on path {}", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<CustomErrorDTO> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         String paramName = ex.getName();
         Object invalidValue = ex.getValue();
 
         String message = String.format("O parâmetro '%s' recebeu um valor inválido: '%s'.", paramName, invalidValue);
 
-        if (ex.getRequiredType().isEnum()) {
+        if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
             String possibleValues = Arrays.toString(ex.getRequiredType().getEnumConstants());
             message += String.format(" Os valores aceitos são: %s.", possibleValues);
         }
 
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message, null);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        CustomErrorDTO err = new CustomErrorDTO(Instant.now(), status.value(), message, request.getRequestURI());
+        logger.error("MethodArgumentTypeMismatchException: {} on path {}", ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 }
