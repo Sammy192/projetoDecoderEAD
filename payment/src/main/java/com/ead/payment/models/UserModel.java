@@ -22,9 +22,9 @@ public class UserModel implements Serializable {
 
     @Id
     private UUID userId;
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = false, length = 50)
     private String email;
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(nullable = false, unique = false, length = 150)
     private String fullName;
     @Column(nullable = false)
     private String userStatus;
