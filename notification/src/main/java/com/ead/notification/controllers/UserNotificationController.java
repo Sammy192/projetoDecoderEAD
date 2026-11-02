@@ -2,6 +2,7 @@ package com.ead.notification.controllers;
 
 import com.ead.notification.configs.security.AuthenticationCurrentUserService;
 import com.ead.notification.configs.security.UserDetailsImpl;
+import com.ead.notification.dtos.NotificationDTO;
 import com.ead.notification.dtos.NotificationStatusDTO;
 import com.ead.notification.models.NotificationModel;
 import com.ead.notification.services.NotificationService;
@@ -29,11 +30,12 @@ public class UserNotificationController {
 
     @PreAuthorize("hasAnyRole('USER')")
     @GetMapping("/users/{userId}/notifications")
-    public ResponseEntity<Page<NotificationModel>> findAllNotificationsCreatedByUser(@PathVariable(value = "userId") UUID userId,
+    public ResponseEntity<Page<NotificationDTO>> findAllNotificationsCreatedByUser(@PathVariable(value = "userId") UUID userId,
                                                                            Pageable pageable) {
         UserDetailsImpl userDetails = authenticationCurrentUserService.getCurrentUser();
         if(userDetails.getUserId().equals(userId) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.ok(notificationService.findAllNotificationsCreatedByUser(userId, pageable));
+            Page<NotificationModel> notificationModelPage = notificationService.findAllNotificationsCreatedByUser(userId, pageable);
+            return ResponseEntity.ok(notificationModelPage.map(NotificationDTO::new));
         } else {
             throw  new AccessDeniedException("Forbidden");
         }
@@ -41,13 +43,13 @@ public class UserNotificationController {
 
     @PreAuthorize("hasAnyRole('USER')")
     @PutMapping("/users/{userId}/notifications/{notificationId}/status")
-    public ResponseEntity<NotificationModel> updateNotificationStatus(@PathVariable(value = "userId") UUID userId,
+    public ResponseEntity<NotificationDTO> updateNotificationStatus(@PathVariable(value = "userId") UUID userId,
                                                            @PathVariable(value = "notificationId") UUID notificationId,
                                                            @RequestBody @Valid NotificationStatusDTO notificationStatusDTO) {
         UserDetailsImpl userDetails = authenticationCurrentUserService.getCurrentUser();
         if(userDetails.getUserId().equals(userId) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             NotificationModel notificationModel = notificationService.updateNotificationStatus(userId, notificationId, notificationStatusDTO);
-            return ResponseEntity.ok(notificationModel);
+            return ResponseEntity.ok(new NotificationDTO(notificationModel));
         } else {
             throw  new AccessDeniedException("Forbidden");
         }
