@@ -3,11 +3,16 @@ package com.ead.payment.controllers;
 import com.ead.payment.configs.security.AuthenticationCurrentUserService;
 import com.ead.payment.configs.security.UserDetailsImpl;
 import com.ead.payment.dto.PaymentRequestDTO;
+import com.ead.payment.dto.PaymentResponseDTO;
 import com.ead.payment.models.PaymentModel;
 import com.ead.payment.services.PaymentService;
-import com.ead.payment.services.UserService;
 import com.ead.payment.specifications.SpecificationTemplate;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,55 +26,73 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "Payment", description = "Endpoints for managing user payments")
 public class PaymentController {
 
-    private final UserService userService;
     private final PaymentService paymentService;
     private final AuthenticationCurrentUserService authenticationCurrentUserService;
 
 
-    public PaymentController(UserService userService, PaymentService paymentService, AuthenticationCurrentUserService authenticationCurrentUserService) {
-        this.userService = userService;
+    public PaymentController(PaymentService paymentService, AuthenticationCurrentUserService authenticationCurrentUserService) {
         this.paymentService = paymentService;
         this.authenticationCurrentUserService = authenticationCurrentUserService;
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @Operation(summary = "Request a new payment", description = "Creates a new payment request for a user. This initiates the payment process.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Payment request created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request data"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - User not authorized"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping("/{userId}/payments")
-    public ResponseEntity<Object> requestPayment(@PathVariable UUID userId,
+    public ResponseEntity<PaymentResponseDTO> requestPayment(@PathVariable UUID userId,
                                                  @RequestBody @Valid PaymentRequestDTO paymentRequest) {
 
         PaymentModel paymentModel = paymentService.requestPayment(paymentRequest, userId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(paymentModel);
+                .body(new PaymentResponseDTO(paymentModel));
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @Operation(summary = "Get all payments for a user", description = "Returns a paginated list of payments for a specific user. Can be filtered by payment details.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of payments returned successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - User not authorized")
+    })
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{userId}/payments")
-    public ResponseEntity<Page<PaymentModel>> getAllPayments(@PathVariable(value="userId") UUID userId,
-                                                             SpecificationTemplate.PaymentSpec spec,
-                                                             Pageable pageable) {
-
-        UserDetailsImpl userDetails = authenticationCurrentUserService.getCurrentUser();
-        if (userDetails.getUserId().equals(userId) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(paymentService.findAllByUser(SpecificationTemplate.paymentUserId(userId).and(spec), pageable));
-        } else {
-            throw new AccessDeniedException("Forbidden");
-        }
+    public ResponseEntity<Page<PaymentResponseDTO>> getAllPayments(@PathVariable UUID userId,
+                                                                   @ParameterObject SpecificationTemplate.PaymentSpec spec,
+                                                                   @ParameterObject Pageable pageable) {
+        checkAuthorization(userId);
+        Page<PaymentModel> paymentModelPage = paymentService.findAllByUser(SpecificationTemplate.paymentUserId(userId).and(spec), pageable);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(paymentModelPage.map(PaymentResponseDTO::new));
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @Operation(summary = "Get a specific payment for a user", description = "Returns details of a single payment by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Payment details returned successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - User not authorized"),
+            @ApiResponse(responseCode = "404", description = "User or Payment not found")
+    })
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{userId}/payments/{paymentId}")
-    public ResponseEntity<Object> getPaymentById(@PathVariable(value="userId") UUID userId,
-                                                @PathVariable(value="paymentId") UUID paymentId){
+    public ResponseEntity<PaymentResponseDTO> getPaymentById(@PathVariable UUID userId,
+                                                             @PathVariable UUID paymentId){
+        checkAuthorization(userId);
+        PaymentModel paymentModel = paymentService.findPaymentByUser(userId, paymentId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new PaymentResponseDTO(paymentModel));
+    }
+
+    private void checkAuthorization(UUID userId) {
         UserDetailsImpl userDetails = authenticationCurrentUserService.getCurrentUser();
-        if(userDetails.getUserId().equals(userId) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(paymentService.findPaymentByUser(userId, paymentId));
-        } else {
+        boolean isAdmin = userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (!userDetails.getUserId().equals(userId) && !isAdmin) {
             throw new AccessDeniedException("Forbidden");
         }
     }
