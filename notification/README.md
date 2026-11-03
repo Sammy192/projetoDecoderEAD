@@ -63,6 +63,31 @@ Authorization: Bearer <seu-token-jwt>
 
 ---
 
+## Comunicação Assíncrona (RabbitMQ)
+
+Além da API REST, este microserviço utiliza comunicação assíncrona via RabbitMQ para receber solicitações de criação de notificações de forma desacoplada e resiliente.
+
+O componente `NotificationConsumer` é responsável por escutar os eventos para a criação de novas notificações.
+
+-   **Exchange:** `${ead.broker.exchange.notificationCommandExchange}` (Topic)
+-   **Queue:** `${ead.broker.queue.notificationCommandQueue.name}`
+-   **Routing Key:** `${ead.broker.key.notificationCommandKey}`
+
+Para que uma notificação seja criada, outro microserviço (como o de Cursos ou Autenticação) deve publicar uma mensagem no exchange configurado. O corpo da mensagem deve seguir o formato do `NotificationCommandDTO`.
+
+#### Exemplo de Mensagem (`NotificationCommandDTO`)
+```json
+{
+  "title": "Bem-vindo ao curso!",
+  "message": "Sua inscrição no curso de Java Avançado foi confirmada.",
+  "userId": "c7b3d2a0-1b1e-4b0e-8c4a-3e3e3e3e3e3e"
+}
+```
+
+Ao receber esta mensagem, o serviço persiste a notificação no banco de dados, associando-a ao usuário correspondente.
+
+---
+
 ## Padrão de Resposta de Erros
 
 A API utiliza um padrão de resposta para erros, facilitando o tratamento no lado do cliente.
