@@ -48,6 +48,9 @@ A API deste microserviço é documentada utilizando OpenAPI 3, com uma interface
 
 Na interface do Swagger, você pode visualizar todos os endpoints, seus parâmetros, os corpos de requisição esperados e os possíveis códigos de resposta, além de poder testar os endpoints diretamente.
 
+<img width="1542" height="554" alt="image" src="https://github.com/user-attachments/assets/20f4b84e-307a-499a-9f1c-9ccf0967ec33" />
+
+
 ### Segurança
 
 Todos os endpoints são protegidos e requerem um **Token JWT** válido, que deve ser enviado no cabeçalho `Authorization` como um Bearer Token.
