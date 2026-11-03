@@ -2,10 +2,13 @@ package com.ead.course.controllers;
 
 import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.dto.SubscriptionDTO;
+import com.ead.course.dto.UserResponseDTO;
+import com.ead.course.models.UserModel;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
 import com.ead.course.specifications.SpecificationTemplate;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -29,19 +32,20 @@ public class CourseUserController {
 
     @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @GetMapping("/courses/{courseId}/users")
-    public ResponseEntity<Object> getAllUsersByCourse(SpecificationTemplate.UserSpec spec,
+    public ResponseEntity<Page<UserResponseDTO>> getAllUsersByCourse(SpecificationTemplate.UserSpec spec,
                                                       @PathVariable(value = "courseId") UUID courseId,
                                                       @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable) {
         if(!courseService.existsByCourseId(courseId)) throw new NotFoundException("Course not found.");
+        Page<UserModel> userModelPage = userService.getAllUsersByCourse(SpecificationTemplate.userCourseId(courseId).and(spec), pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.getAllUsersByCourse(SpecificationTemplate.userCourseId(courseId).and(spec), pageable));
+                .body(userModelPage.map(UserResponseDTO::new));
     }
 
     @PreAuthorize("hasAnyRole('STUDENT')")
     @PostMapping("/courses/{courseId}/users/subscription")
-    public ResponseEntity<Object> saveSubscriptionUserInCourse(@PathVariable(value = "courseId") UUID courseId,
+    public ResponseEntity<Void> saveSubscriptionUserInCourse(@PathVariable(value = "courseId") UUID courseId,
                                                                @RequestBody @Valid SubscriptionDTO subscriptionDTO) {
         courseService.saveSubscriptionUserInCourse(courseId, subscriptionDTO.userId());
-        return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created successfully.");
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

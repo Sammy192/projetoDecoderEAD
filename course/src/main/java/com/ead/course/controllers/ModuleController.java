@@ -1,6 +1,7 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dto.ModuleDTO;
+import com.ead.course.dto.ModuleResponseDTO;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.services.ModuleService;
 import com.ead.course.specifications.SpecificationTemplate;
@@ -29,45 +30,47 @@ public class ModuleController {
 
     @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PostMapping("/courses/{courseId}/modules")
-    public ResponseEntity<Object> saveModuleIntoCourse(@PathVariable(value = "courseId") UUID courseId,
+    public ResponseEntity<ModuleResponseDTO> saveModuleIntoCourse(@PathVariable(value = "courseId") UUID courseId,
                                                        @RequestBody @Valid ModuleDTO moduleDto) {
         logger.debug("POST saveModuleIntoCourse moduleDto received {} for courseId {} ", moduleDto, courseId);
         ModuleModel moduleModel =  moduleService.saveModuleIntoCourse(moduleDto, courseId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(moduleModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ModuleResponseDTO(moduleModel));
     }
 
     @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/courses/{courseId}/modules")
-    public ResponseEntity<Page<ModuleModel>> findAllModulesByCourseId(@PathVariable(value = "courseId") UUID courseId,
+    public ResponseEntity<Page<ModuleResponseDTO>> findAllModulesByCourseId(@PathVariable(value = "courseId") UUID courseId,
                                                                       SpecificationTemplate.ModuleSpec spec, Pageable pageable) {
         logger.debug("GET findAllModulesByCourseId courseId received {} ", courseId);
-        return ResponseEntity.status(HttpStatus.OK).body(moduleService.findAllModulesByCourseId(SpecificationTemplate.moduleCourseId(courseId).and(spec), pageable));
+        Page<ModuleModel> moduleModelPage = moduleService.findAllModulesByCourseId(SpecificationTemplate.moduleCourseId(courseId).and(spec), pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(moduleModelPage.map(ModuleResponseDTO::new));
     }
 
     @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/courses/{courseId}/modules/{moduleId}")
-    public ResponseEntity<Object> findModuleByIdIntoCourse(@PathVariable(value = "courseId") UUID courseId,
+    public ResponseEntity<ModuleResponseDTO> findModuleByIdIntoCourse(@PathVariable(value = "courseId") UUID courseId,
                                                            @PathVariable(value = "moduleId") UUID moduleId) {
         logger.debug("GET findModuleByIdIntoCourse courseId {} moduleId {} ", courseId, moduleId);
-        return ResponseEntity.status(HttpStatus.OK).body(moduleService.findModuleByIdIntoCourse(courseId, moduleId));
+        ModuleModel moduleModel = moduleService.findModuleByIdIntoCourse(courseId, moduleId);
+        return ResponseEntity.status(HttpStatus.OK).body(new ModuleResponseDTO(moduleModel));
     }
 
     @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
-    public ResponseEntity<Object> deleteModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
+    public ResponseEntity<Void> deleteModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId) {
         logger.debug("DELETE deleteModuleInsideACourse courseId {} moduleId {} ", courseId, moduleId);
         moduleService.deleteModuleInsideACourse(courseId, moduleId);
-        return ResponseEntity.status(HttpStatus.OK).body("Module deleted successfully.");
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @PutMapping("/courses/{courseId}/modules/{moduleId}")
-    public ResponseEntity<Object> updateModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
+    public ResponseEntity<ModuleResponseDTO> updateModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId,
                                                             @RequestBody @Valid ModuleDTO moduleDto) {
         logger.debug("PUT updateModuleInsideACourse courseId {} moduleId {} moduleDto {} ", courseId, moduleId, moduleDto);
         ModuleModel moduleModel = moduleService.updateModuleInsideACourse(courseId, moduleId, moduleDto);
-        return ResponseEntity.status(HttpStatus.OK).body(moduleModel);
+        return ResponseEntity.status(HttpStatus.OK).body(new ModuleResponseDTO(moduleModel));
     }
 }
