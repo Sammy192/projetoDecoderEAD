@@ -8,6 +8,8 @@ import com.ead.payment.models.PaymentModel;
 import com.ead.payment.services.PaymentService;
 import com.ead.payment.specifications.SpecificationTemplate;
 import io.swagger.v3.oas.annotations.Operation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +34,8 @@ import java.util.UUID;
 @Tag(name = "Payment", description = "Endpoints for managing user payments")
 public class PaymentController {
 
+    private static final Logger logger = LogManager.getLogger(PaymentController.class);
+
     private final PaymentService paymentService;
     private final AuthenticationCurrentUserService authenticationCurrentUserService;
 
@@ -52,9 +56,12 @@ public class PaymentController {
     @PostMapping("/{userId}/payments")
     public ResponseEntity<PaymentResponseDTO> requestPayment(@PathVariable UUID userId,
                                                  @RequestBody @Valid PaymentRequestDTO paymentRequest) {
+        logger.debug("POST requestPayment userId: {}", userId);
 
         PaymentModel paymentModel = paymentService.requestPayment(paymentRequest, userId);
 
+        logger.debug("Payment request created successfully with paymentId: {}", paymentModel.getPaymentId());
+        logger.info("Payment request created successfully for userId: {}", userId);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new PaymentResponseDTO(paymentModel));

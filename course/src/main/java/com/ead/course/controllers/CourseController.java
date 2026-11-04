@@ -48,6 +48,7 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
     @PostMapping
     public ResponseEntity<CourseResponseDTO> saveCourse(@RequestBody @Valid CourseDTO courseDto) {
+        logger.info("Entering saveCourse with courseDto: {}", courseDto);
         CourseModel courseModel = courseService.saveCourse(courseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new CourseResponseDTO(courseModel));
     }
@@ -67,6 +68,7 @@ public class CourseController {
     public ResponseEntity<Page<CourseResponseDTO>> getAllcourses(@ParameterObject SpecificationTemplate.CourseSpec spec,
                                                                 @ParameterObject Pageable pageable,
                                                                 @RequestParam(required = false) UUID userId) {
+        logger.info("Entering getAllcourses");
         Page<CourseModel> courseModels = userId != null ? courseService.findAll(SpecificationTemplate.courseUserId(userId).and(spec), pageable) : courseService.findAll(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(courseModels.map(CourseResponseDTO::new));
     }
@@ -79,6 +81,7 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseResponseDTO> getOneCourse(@PathVariable(value = "courseId") UUID courseId) {
+        logger.info("Entering getOneCourse with courseId: {}", courseId);
         CourseModel courseModel = courseService.findById(courseId);
         return ResponseEntity.status(HttpStatus.OK).body(new CourseResponseDTO(courseModel));
     }
@@ -91,7 +94,7 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     @DeleteMapping("/{courseId}")
     public ResponseEntity<Void> deleteCourse(@PathVariable(value = "courseId") UUID courseId) {
-        logger.debug("DELETE deleteCourse courseId received {} ", courseId);
+        logger.info("Entering deleteCourse with courseId: {}", courseId);
         courseService.deleteCourse(courseId);
         return ResponseEntity.noContent().build();
     }
@@ -106,7 +109,7 @@ public class CourseController {
     @PutMapping("/{courseId}")
     public ResponseEntity<CourseResponseDTO> updateCourse(@PathVariable(value = "courseId") UUID courseId,
                                                @RequestBody @Valid CourseDTO courseDto) {
-        logger.debug("PUT updateCourse courseId received {} with courseDto {} ", courseId, courseDto);
+        logger.info("Entering updateCourse with courseId: {} and courseDto: {}", courseId, courseDto);
         CourseModel course = courseService.updateCourse(courseId, courseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(new CourseResponseDTO(course));

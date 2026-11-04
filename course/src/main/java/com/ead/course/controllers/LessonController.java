@@ -46,7 +46,7 @@ public class LessonController {
     @PostMapping("/modules/{moduleId}/lessons")
     public ResponseEntity<LessonResponseDTO> saveLessonIntoModule(@PathVariable(value = "moduleId") UUID moduleId,
                                                        @RequestBody @Valid LessonDTO lessonDto) {
-        logger.debug("POST saveLessonIntoModule lessonDto received {} for moduleId {} ", lessonDto, moduleId);
+        logger.info("Entering saveLessonIntoModule with moduleId: {} and lessonDto: {}", moduleId, lessonDto);
         LessonModel lessonModel =  lessonService.saveLessonIntoModule(lessonDto, moduleId);
         return ResponseEntity.status(HttpStatus.CREATED).body(new LessonResponseDTO(lessonModel));
     }
@@ -64,7 +64,7 @@ public class LessonController {
     public ResponseEntity<Page<LessonResponseDTO>> findAllLessonsByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
                                                                       SpecificationTemplate.LessonSpec spec,
                                                                       @ParameterObject Pageable pageable) {
-        logger.debug("GET findAllLessonsByModuleId moduleId received {} ", moduleId);
+        logger.info("Entering findAllLessonsByModuleId with moduleId: {}", moduleId);
         Page<LessonModel> lessonModelPage = lessonService.findAllLessonsByModuleId(SpecificationTemplate.lessonModuleId(moduleId).and(spec), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(lessonModelPage.map(LessonResponseDTO::new));
     }
@@ -78,7 +78,7 @@ public class LessonController {
     @GetMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<LessonResponseDTO> getOneLessonByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
                                                          @PathVariable(value = "lessonId") UUID lessonId) {
-        logger.debug("GET getOneLessonByModuleId moduleId {} lessonId {} ", moduleId, lessonId);
+        logger.info("Entering getOneLessonByModuleId with moduleId: {} and lessonId: {}", moduleId, lessonId);
         LessonModel lessonModel = lessonService.getOneLessonByModuleId(moduleId, lessonId);
         return ResponseEntity.status(HttpStatus.OK).body(new LessonResponseDTO(lessonModel));
     }
@@ -92,7 +92,7 @@ public class LessonController {
     @DeleteMapping("/modules/{moduleId}/lessons/{lessonId}")
     public ResponseEntity<Void> deleteLessonInsideAModule(@PathVariable(value = "moduleId") UUID moduleId,
                                                             @PathVariable(value = "lessonId") UUID lessonId) {
-        logger.debug("DELETE deleteLessonInsideAModule moduleId {} lessonId {} ", moduleId, lessonId);
+        logger.info("Entering deleteLessonInsideAModule with moduleId: {} and lessonId: {}", moduleId, lessonId);
         lessonService.deleteLessonInsideAModule(moduleId, lessonId);
         return ResponseEntity.noContent().build();
     }
@@ -108,7 +108,7 @@ public class LessonController {
     public ResponseEntity<LessonResponseDTO> updateLessonInsideAModule(@PathVariable(value = "moduleId") UUID moduleId,
                                                             @PathVariable(value = "lessonId") UUID lessonId,
                                                             @RequestBody @Valid LessonDTO lessonDto) {
-        logger.debug("PUT updateLessonInsideAModule moduleId {} lessonId {} lessonDto {} ", moduleId, lessonId, lessonDto);
+        logger.info("Entering updateLessonInsideAModule with moduleId: {}, lessonId: {} and lessonDto: {}", moduleId, lessonId, lessonDto);
         LessonModel lessonModel = lessonService.updateLessonInsideAModule(moduleId, lessonId, lessonDto);
         return ResponseEntity.status(HttpStatus.OK).body(new LessonResponseDTO(lessonModel));
     }

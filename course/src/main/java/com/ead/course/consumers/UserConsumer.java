@@ -31,7 +31,5 @@ public class UserConsumer {
             case CREATE, UPDATE -> userService.saveUser(userEventDTO);
             case DELETE -> userService.deleteUserById(userEventDTO.userId());
         }
-
-
     }
 }

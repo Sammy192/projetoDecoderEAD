@@ -35,7 +35,7 @@ import java.util.UUID;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-    private Logger logger = LogManager.getLogger(PaymentServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(PaymentServiceImpl.class);
 
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
@@ -58,6 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentModel requestPayment(PaymentRequestDTO paymentRequest, UUID userId) {
+        logger.debug("Starting payment request process for userId: {}", userId);
         UserModel userModel = userService.findById(userId);
         validaPagamento(userModel);
         CreditCardModel creditCardModel = salvaCartaoCredito(paymentRequest, userModel);
@@ -65,6 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         publishPaymentCommand(userModel, paymentModel, creditCardModel);
 
+        logger.info("Payment request process completed for userId: {}. PaymentId: {}", userId, paymentModel.getPaymentId());
         return paymentModel;
     }
 

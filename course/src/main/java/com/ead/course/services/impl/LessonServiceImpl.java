@@ -7,6 +7,8 @@ import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.LessonService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,8 @@ import java.util.UUID;
 
 @Service
 public class LessonServiceImpl implements LessonService {
+
+    Logger logger = LogManager.getLogger(LessonServiceImpl.class);
 
     private final LessonRepository lessonRepository;
     private final ModuleRepository moduleRepository;
@@ -40,11 +44,13 @@ public class LessonServiceImpl implements LessonService {
         LessonModel lessonModel = lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new NotFoundException("Lesson not found."));
         lessonRepository.delete(lessonModel);
+        logger.info("Lesson with id {} deleted successfully.", lessonId);
     }
 
     @Transactional
     @Override
     public void deleteLessonsByModule(ModuleModel moduleModel) {
+        logger.info("Deleting all lessons for moduleId: {}", moduleModel.getModuleId());
         List<LessonModel> lessonModelList = lessonRepository.findAllByModuleModuleId(moduleModel.getModuleId());
         if (!lessonModelList.isEmpty()) {
             lessonRepository.deleteAllInBatch(lessonModelList);
@@ -55,6 +61,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void deleteAllLessonsByModules(List<ModuleModel> moduleModels) {
         List<UUID> moduleIds = moduleModels.stream().map(ModuleModel::getModuleId).toList();
+        logger.info("Deleting all lessons for moduleIds: {}", moduleIds);
         List<LessonModel> lessons = lessonRepository.findAllByModuleModuleIdIn(moduleIds);
         if (!lessons.isEmpty()) {
             lessonRepository.deleteAllInBatch(lessons);
@@ -63,12 +70,15 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonModel saveLessonIntoModule(LessonDTO lessonDto, UUID moduleId) {
+        logger.info("Attempting to save a new lesson in module {}", moduleId);
         ModuleModel moduleModel = getModuleModel(moduleId);
         var lessonModel = new LessonModel();
         BeanUtils.copyProperties(lessonDto, lessonModel);
         lessonModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         lessonModel.setModule(moduleModel);
-        return lessonRepository.save(lessonModel);
+        LessonModel savedLesson = lessonRepository.save(lessonModel);
+        logger.info("Lesson saved successfully with id {}", savedLesson.getLessonId());
+        return savedLesson;
     }
 
     @Override
@@ -92,9 +102,12 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonModel updateLessonInsideAModule(UUID moduleId, UUID lessonId, LessonDTO lessonDTO) {
+        logger.info("Attempting to update lesson {} in module {}", lessonId, moduleId);
         LessonModel lessonModel = getOneLessonByModuleId(moduleId, lessonId);
         BeanUtils.copyProperties(lessonDTO, lessonModel);
-        return lessonRepository.save(lessonModel);
+        LessonModel updatedLesson = lessonRepository.save(lessonModel);
+        logger.info("Lesson updated successfully with id {}", updatedLesson.getLessonId());
+        return updatedLesson;
     }
 
     private ModuleModel getModuleModel(UUID moduleId) {

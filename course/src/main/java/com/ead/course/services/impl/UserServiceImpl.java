@@ -6,6 +6,8 @@ import com.ead.course.models.UserModel;
 import com.ead.course.repositories.UserRepository;
 import com.ead.course.services.UserService;
 import jakarta.transaction.Transactional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
 
@@ -31,16 +35,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserModel saveUser(UserEventDTO userEventDTO) {
+        logger.info("Saving or updating user from event with id: {}", userEventDTO.userId());
         UserModel userModel = new UserModel();
         BeanUtils.copyProperties(userEventDTO, userModel);
-        return userRepository.save(userModel);
+        UserModel savedUser = userRepository.save(userModel);
+        logger.info("User saved successfully with id: {}", savedUser.getUserId());
+        return savedUser;
     }
 
     @Transactional
     @Override
     public void deleteUserById(UUID userId) {
+        logger.info("Deleting user and subscriptions for userId: {}", userId);
         userRepository.deleteSubscriptionsByUserId(userId);
         userRepository.deleteById(userId);
+        logger.info("User with id {} deleted successfully.", userId);
     }
 
     @Override

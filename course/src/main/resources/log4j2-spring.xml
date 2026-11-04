@@ -17,7 +17,12 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
 
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="5">
+                <Delete basePath="../logs/ead-course" maxDepth="1">
+                    <IfFileName glob="ead-course-service-*.log.gz"/>
+                    <IfLastModified age="3d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
 
         </RollingFile>
 

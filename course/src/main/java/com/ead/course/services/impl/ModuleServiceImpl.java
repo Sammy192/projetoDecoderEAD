@@ -8,6 +8,8 @@ import com.ead.course.repositories.CourseRepository;
 import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.LessonService;
 import com.ead.course.services.ModuleService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ import java.util.UUID;
 
 @Service
 public class ModuleServiceImpl implements ModuleService {
+
+    Logger logger = LogManager.getLogger(ModuleServiceImpl.class);
 
     private final ModuleRepository moduleRepository;
     private final LessonService lessonService;
@@ -45,17 +49,21 @@ public class ModuleServiceImpl implements ModuleService {
                 .orElseThrow(() -> new NotFoundException("Module not found."));
         lessonService.deleteLessonsByModule(moduleModel);
         moduleRepository.delete(moduleModel);
+        logger.info("Module with id {} deleted successfully.", moduleId);
     }
 
     @Transactional
     @Override
     public ModuleModel saveModuleIntoCourse(ModuleDTO moduleDto, UUID courseId) {
+        logger.info("Attempting to save a new module in course {}", courseId);
         CourseModel courseModel = getCourseModel(courseId);
         ModuleModel moduleModel = new ModuleModel();
         BeanUtils.copyProperties(moduleDto, moduleModel);
         moduleModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         moduleModel.setCourse(courseModel);
-        return moduleRepository.save(moduleModel);
+        ModuleModel savedModule = moduleRepository.save(moduleModel);
+        logger.info("Module saved successfully with id {}", savedModule.getModuleId());
+        return savedModule;
     }
 
     private CourseModel getCourseModel(UUID courseId) {
@@ -83,14 +91,18 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public ModuleModel updateModuleInsideACourse(UUID courseId, UUID moduleId, ModuleDTO moduleDTO) {
+        logger.info("Attempting to update module {} in course {}", moduleId, courseId);
         ModuleModel moduleModel = findModuleByIdIntoCourse(courseId, moduleId);
         BeanUtils.copyProperties(moduleDTO, moduleModel);
-        return moduleRepository.save(moduleModel);
+        ModuleModel updatedModule = moduleRepository.save(moduleModel);
+        logger.info("Module updated successfully with id {}", updatedModule.getModuleId());
+        return updatedModule;
     }
 
     @Transactional
     @Override
     public void deleteAllByCourse(UUID courseId) {
+        logger.info("Deleting all modules for courseId: {}", courseId);
         List<ModuleModel> modules = moduleRepository.findAllByCourseCourseId(courseId);
         if (!modules.isEmpty()) {
             lessonService.deleteAllLessonsByModules(modules);

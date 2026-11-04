@@ -36,3 +36,4 @@ build/
 /logs/ead-authuser/*
 /logs/ead-course/*
 /logs/ead-notification/*
+/logs/ead-payment/*

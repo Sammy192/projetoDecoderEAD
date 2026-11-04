@@ -47,7 +47,7 @@ public class ModuleController {
     @PostMapping("/courses/{courseId}/modules")
     public ResponseEntity<ModuleResponseDTO> saveModuleIntoCourse(@PathVariable(value = "courseId") UUID courseId,
                                                        @RequestBody @Valid ModuleDTO moduleDto) {
-        logger.debug("POST saveModuleIntoCourse moduleDto received {} for courseId {} ", moduleDto, courseId);
+        logger.info("Entering saveModuleIntoCourse with courseId: {} and moduleDto: {}", courseId, moduleDto);
         ModuleModel moduleModel =  moduleService.saveModuleIntoCourse(moduleDto, courseId);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ModuleResponseDTO(moduleModel));
     }
@@ -65,7 +65,7 @@ public class ModuleController {
     public ResponseEntity<Page<ModuleResponseDTO>> findAllModulesByCourseId(@PathVariable(value = "courseId") UUID courseId,
                                                                       SpecificationTemplate.ModuleSpec spec,
                                                                       @ParameterObject Pageable pageable) {
-        logger.debug("GET findAllModulesByCourseId courseId received {} ", courseId);
+        logger.info("Entering findAllModulesByCourseId with courseId: {}", courseId);
         Page<ModuleModel> moduleModelPage = moduleService.findAllModulesByCourseId(SpecificationTemplate.moduleCourseId(courseId).and(spec), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(moduleModelPage.map(ModuleResponseDTO::new));
     }
@@ -79,7 +79,7 @@ public class ModuleController {
     @GetMapping("/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<ModuleResponseDTO> findModuleByIdIntoCourse(@PathVariable(value = "courseId") UUID courseId,
                                                            @PathVariable(value = "moduleId") UUID moduleId) {
-        logger.debug("GET findModuleByIdIntoCourse courseId {} moduleId {} ", courseId, moduleId);
+        logger.info("Entering findModuleByIdIntoCourse with courseId: {} and moduleId: {}", courseId, moduleId);
         ModuleModel moduleModel = moduleService.findModuleByIdIntoCourse(courseId, moduleId);
         return ResponseEntity.status(HttpStatus.OK).body(new ModuleResponseDTO(moduleModel));
     }
@@ -93,7 +93,7 @@ public class ModuleController {
     @DeleteMapping("/courses/{courseId}/modules/{moduleId}")
     public ResponseEntity<Void> deleteModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId) {
-        logger.debug("DELETE deleteModuleInsideACourse courseId {} moduleId {} ", courseId, moduleId);
+        logger.info("Entering deleteModuleInsideACourse with courseId: {} and moduleId: {}", courseId, moduleId);
         moduleService.deleteModuleInsideACourse(courseId, moduleId);
         return ResponseEntity.noContent().build();
     }
@@ -109,7 +109,7 @@ public class ModuleController {
     public ResponseEntity<ModuleResponseDTO> updateModuleInsideACourse(@PathVariable(value = "courseId") UUID courseId,
                                                             @PathVariable(value = "moduleId") UUID moduleId,
                                                             @RequestBody @Valid ModuleDTO moduleDto) {
-        logger.debug("PUT updateModuleInsideACourse courseId {} moduleId {} moduleDto {} ", courseId, moduleId, moduleDto);
+        logger.info("Entering updateModuleInsideACourse with courseId: {}, moduleId: {} and moduleDto: {}", courseId, moduleId, moduleDto);
         ModuleModel moduleModel = moduleService.updateModuleInsideACourse(courseId, moduleId, moduleDto);
         return ResponseEntity.status(HttpStatus.OK).body(new ModuleResponseDTO(moduleModel));
     }

@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +33,8 @@ import java.util.UUID;
 @RestController
 @Tag(name = "Courses/Users", description = "Endpoints para gerenciamento de inscrições de usuários em cursos")
 public class CourseUserController {
+
+    Logger logger = LogManager.getLogger(CourseUserController.class);
 
     private final CourseService courseService;
     private final UserService userService;
@@ -56,6 +60,7 @@ public class CourseUserController {
     public ResponseEntity<Page<UserResponseDTO>> getAllUsersByCourse(SpecificationTemplate.UserSpec spec,
                                                       @PathVariable(value = "courseId") UUID courseId,
                                                       @ParameterObject @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable) {
+        logger.info("Entering getAllUsersByCourse with courseId: {}", courseId);
         if(!courseService.existsByCourseId(courseId)) throw new NotFoundException("Course not found.");
         Page<UserModel> userModelPage = userService.getAllUsersByCourse(SpecificationTemplate.userCourseId(courseId).and(spec), pageable);
         return ResponseEntity.status(HttpStatus.OK)
@@ -72,6 +77,7 @@ public class CourseUserController {
     @PostMapping("/courses/{courseId}/users/subscription")
     public ResponseEntity<Void> saveSubscriptionUserInCourse(@PathVariable(value = "courseId") UUID courseId,
                                                                @RequestBody @Valid SubscriptionDTO subscriptionDTO) {
+        logger.info("Entering saveSubscriptionUserInCourse with courseId: {} and userId: {}", courseId, subscriptionDTO.userId());
         courseService.saveSubscriptionUserInCourse(courseId, subscriptionDTO.userId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

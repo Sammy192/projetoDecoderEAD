@@ -51,10 +51,12 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public void deleteCourse(UUID courseId) {
+        logger.info("Starting deletion process for courseId: {}", courseId);
         CourseModel courseModel = findById(courseId);
         moduleService.deleteAllByCourse(courseId);
         courseRepository.deleteSubscriptionsByCourseId(courseId);
         courseRepository.delete(courseModel);
+        logger.info("Course with courseId: {} deleted successfully.", courseId);
     }
 
     @Override
@@ -64,6 +66,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseModel saveCourse(CourseDTO courseDto) {
+        logger.info("Starting to save a new course with name: {}", courseDto.name());
         if (courseRepository.existsByName(courseDto.name())) {
             throw new ConflictException("Error: Course Name already exists.");
         }
@@ -84,7 +87,9 @@ public class CourseServiceImpl implements CourseService {
         BeanUtils.copyProperties(courseDto, courseModel);
         courseModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return courseRepository.save(courseModel);
+        CourseModel savedCourse = courseRepository.save(courseModel);
+        logger.info("Course saved successfully with id: {}", savedCourse.getCourseId());
+        return savedCourse;
     }
 
     @Override
@@ -94,10 +99,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseModel updateCourse(UUID courseId, CourseDTO courseDto) {
+        logger.info("Starting to update course with id: {}", courseId);
         CourseModel courseModel = findById(courseId);
         BeanUtils.copyProperties(courseDto, courseModel);
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        return courseRepository.save(courseModel);
+        CourseModel updatedCourse = courseRepository.save(courseModel);
+        logger.info("Course updated successfully with id: {}", updatedCourse.getCourseId());
+        return updatedCourse;
     }
 
     @Override
@@ -108,8 +116,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
-        CourseModel courseModel = courseRepository.findById(courseId).orElseThrow(() -> new NotFoundException("Course not found."));
+        logger.info("Attempting to subscribe user {} to course {}", userId, courseId);
+        CourseModel courseModel = findById(courseId);
         if (courseRepository.existsByCourseIdAndUsersUserId(courseId, userId)) {
+            logger.warn("Conflict: User {} is already subscribed to course {}.", userId, courseId);
             throw new ConflictException("Error: subscription already exists!");
         }
         UserModel userModel = userService.findById(userId);
@@ -117,7 +127,7 @@ public class CourseServiceImpl implements CourseService {
         if(UserStatusEnum.BLOCKED.name().equalsIgnoreCase(userModel.getUserStatus())) throw new ConflictException("User is blocked.");
 
         courseRepository.saveSubscriptionUserInCourse(courseModel.getCourseId(), userModel.getUserId());
-
+        logger.info("User {} subscribed successfully to course {}.", userId, courseId);
         enviaMensagemNotificacao(courseModel, userModel);
 
     }
@@ -130,7 +140,7 @@ public class CourseServiceImpl implements CourseService {
                     userModel.getUserId());
             notificationCommandPublischer.publishNotificationCommand(notificationCommandDTO);
         } catch (Exception e) {
-            logger.error("Error sending notification!");
+            logger.error("Error sending notification for user {} in course {}: {}", userModel.getUserId(), courseModel.getCourseId(), e.getMessage());
         }
     }
 }

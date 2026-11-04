@@ -17,7 +17,12 @@
                 <SizeBasedTriggeringPolicy size="100 MB"/>
             </Policies>
 
-            <DefaultRolloverStrategy max="10"/>
+            <DefaultRolloverStrategy max="5">
+                <Delete basePath="../logs/ead-authuser" maxDepth="1">
+                    <IfFileName glob="ead-authuser-service-*.log.gz"/>
+                    <IfLastModified age="3d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
 
         </RollingFile>
 
