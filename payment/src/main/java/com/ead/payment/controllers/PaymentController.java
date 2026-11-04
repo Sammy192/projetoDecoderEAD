@@ -8,6 +8,9 @@ import com.ead.payment.models.PaymentModel;
 import com.ead.payment.services.PaymentService;
 import com.ead.payment.specifications.SpecificationTemplate;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,7 +60,14 @@ public class PaymentController {
                 .body(new PaymentResponseDTO(paymentModel));
     }
 
-    @Operation(summary = "Get all payments for a user", description = "Returns a paginated list of payments for a specific user. Can be filtered by payment details.")
+    @Operation(summary = "Get all payments for a user",
+            description = "Returns a paginated list of payments for a specific user. Can be filtered by payment details.",
+            parameters = {
+                    @Parameter(name = "paymentControl", description = "Filtra pelo status do pagamento.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"PENDING", "APPROVED", "DECLINED", "ERROR"}), example = "APPROVED"),
+                    @Parameter(name = "valuePaid", description = "Filtra pelo valor exato pago.", in = ParameterIn.QUERY, schema = @Schema(type = "number", format = "double"), example = "99.90"),
+                    @Parameter(name = "lastDigitsCreditCard", description = "Filtra pelos últimos dígitos do cartão de crédito (busca parcial, case-insensitive).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "1234"),
+                    @Parameter(name = "paymentMessage", description = "Filtra pela mensagem de status do pagamento (busca parcial, case-insensitive).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "approved")
+            })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of payments returned successfully"),
             @ApiResponse(responseCode = "403", description = "Forbidden - User not authorized")
