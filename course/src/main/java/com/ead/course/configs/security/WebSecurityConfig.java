@@ -29,6 +29,14 @@ public class WebSecurityConfig {
     private final JwtProvider jwtProvider;
     private final AccessDeniedHandlerImpl accessDeniedHandler;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**"
+    };
+
     public WebSecurityConfig(AuthenticationEntryPoint authenticationEntryPoint, JwtProvider jwtProvider, AccessDeniedHandlerImpl accessDeniedHandler) {
         this.authenticationEntryPoint = authenticationEntryPoint;
         this.jwtProvider = jwtProvider;
@@ -61,6 +69,7 @@ public class WebSecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
                                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                                .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
