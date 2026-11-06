@@ -26,7 +26,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
-            "/auth/**"
+            "/auth/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/webjars/**"
     };
 
     private final UserDetailsServiceImpl userDetailsService;

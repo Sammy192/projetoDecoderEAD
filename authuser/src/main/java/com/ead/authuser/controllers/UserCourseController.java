@@ -4,6 +4,11 @@ import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.configs.security.AuthenticationCurrentUserService;
 import com.ead.authuser.configs.security.UserDetailsImpl;
 import com.ead.authuser.dto.CourseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
+@Tag(name = "User-Course", description = "Endpoints para gerenciamento da relação entre usuários e cursos")
 public class UserCourseController {
 
     private final CourseClient courseClient;
@@ -33,9 +39,15 @@ public class UserCourseController {
 
     //@PreAuthorize("hasAnyRole('ADMIN') or #userId == authentication.principal.userId")
     @PreAuthorize("hasAnyRole('USER')")
+    @Operation(summary = "Listar os cursos de um usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de cursos retornada com sucesso."),
+            @ApiResponse(responseCode = "403", description = "Acesso negado.")
+    })
     @GetMapping("/users/{userId}/courses")
     public ResponseEntity<Page<CourseDTO>> getAllCoursesByUser(@PathVariable(value = "userId") UUID userId,
                                                                @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC) Pageable pageable,
+                                                               @Parameter(description = "Token JWT para autenticação no microserviço de cursos.", required = true)
                                                                @RequestHeader("Authorization") String token) {
         UserDetailsImpl loggedInUser = authenticationCurrentUserService.getCurrentUser();
         boolean isUserAdmin = loggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));

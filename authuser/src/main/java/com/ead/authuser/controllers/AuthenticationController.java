@@ -7,6 +7,10 @@ import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.dto.UserResponseDTO;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import jakarta.validation.Valid;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication", description = "Endpoints para autenticação e registro")
 public class AuthenticationController {
 
     Logger logger = LogManager.getLogger(AuthenticationController.class);
@@ -41,6 +46,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "Registrar um novo usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Usuário registrado com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Dados de registro inválidos."),
+            @ApiResponse(responseCode = "409", description = "Conflito: username ou email já existem.")
+    })
     public ResponseEntity<UserResponseDTO> registerUser(@RequestBody @Validated(UserDTORequest.UserView.RegistrationPost.class)
                                                         @JsonView(UserDTORequest.UserView.RegistrationPost.class)
                                                         UserDTORequest userDTORequest) {
@@ -51,6 +62,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Realizar login e obter um token JWT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Login bem-sucedido, token JWT retornado."),
+            @ApiResponse(responseCode = "400", description = "Dados de login inválidos."),
+            @ApiResponse(responseCode = "401", description = "Credenciais inválidas (username ou senha incorretos).")
+    })
     public ResponseEntity<JwtDTO> loginUser(@RequestBody @Valid LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));

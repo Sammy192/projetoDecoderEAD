@@ -9,7 +9,6 @@ import com.ead.course.services.UserService;
 import com.ead.course.specifications.SpecificationTemplate;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,12 +44,10 @@ public class CourseUserController {
     }
 
     @Operation(summary = "Busca usuários por curso", description = "Retorna uma lista paginada de usuários inscritos em um curso específico. Requer perfil de INSTRUTOR.")
-    @Parameters({
-            @Parameter(name = "email", description = "Filtra pelo email do usuário (busca parcial).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "test@example.com"),
-            @Parameter(name = "fullName", description = "Filtra pelo nome completo do usuário (busca parcial, case-insensitive).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "John Doe"),
-            @Parameter(name = "userStatus", description = "Filtra pelo status do usuário.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"ACTIVE", "BLOCKED"}), example = "ACTIVE"),
-            @Parameter(name = "userType", description = "Filtra pelo tipo de usuário.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"STUDENT", "INSTRUCTOR", "ADMIN"}), example = "STUDENT")
-    })
+    @Parameter(name = "email", description = "Filtra pelo email do usuário (busca parcial).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "test@example.com")
+    @Parameter(name = "fullName", description = "Filtra pelo nome completo do usuário (busca parcial, case-insensitive).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "John Doe")
+    @Parameter(name = "userStatus", description = "Filtra pelo status do usuário.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"ACTIVE", "BLOCKED"}), example = "ACTIVE")
+    @Parameter(name = "userType", description = "Filtra pelo tipo de usuário.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"STUDENT", "INSTRUCTOR", "ADMIN"}), example = "STUDENT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuários encontrados"),
             @ApiResponse(responseCode = "404", description = "Curso não encontrado")
