@@ -53,7 +53,7 @@ public class LessonController {
 
     @Operation(summary = "Busca todas as lições de um módulo", description = "Retorna uma lista paginada de lições de um módulo específico. Requer perfil de ESTUDANTE.",
             parameters = {@Parameter(name = "title", description = "Filtra pelo título da lição (busca parcial, case-insensitive).",
-                    in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "Primeiros Passos")
+                    in = ParameterIn.QUERY, schema = @Schema(type = "string"))
             })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de lições retornada com sucesso"),
@@ -62,8 +62,8 @@ public class LessonController {
     @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/modules/{moduleId}/lessons")
     public ResponseEntity<Page<LessonResponseDTO>> findAllLessonsByModuleId(@PathVariable(value = "moduleId") UUID moduleId,
-                                                                      SpecificationTemplate.LessonSpec spec,
-                                                                      @ParameterObject Pageable pageable) {
+                                                                            @ParameterObject SpecificationTemplate.LessonSpec spec,
+                                                                            @ParameterObject Pageable pageable) {
         logger.info("Entering findAllLessonsByModuleId with moduleId: {}", moduleId);
         Page<LessonModel> lessonModelPage = lessonService.findAllLessonsByModuleId(SpecificationTemplate.lessonModuleId(moduleId).and(spec), pageable);
         return ResponseEntity.status(HttpStatus.OK).body(lessonModelPage.map(LessonResponseDTO::new));

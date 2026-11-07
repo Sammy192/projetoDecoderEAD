@@ -55,10 +55,10 @@ public class CourseController {
 
     @Operation(summary = "Busca todos os cursos", description = "Retorna uma lista paginada de cursos, com filtros opcionais. Requer perfil de ESTUDANTE.")
     @Parameter(name = "userId", description = "ID do usuário para filtrar cursos onde ele está matriculado", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "uuid"))
-    @Parameter(name = "name", description = "Filtra pelo nome do curso (busca parcial, case-insensitive).", in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "Java Spring")
-    @Parameter(name = "courseStatus", description = "Filtra pelo status do curso.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"INPROGRESS", "CONCLUDED"}), example = "INPROGRESS")
-    @Parameter(name = "courseLevel", description = "Filtra pelo nível do curso.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"BEGINNER", "INTERMEDIARY", "ADVANCED"}), example = "BEGINNER")
-    @Parameter(name = "userInstructor", description = "Filtra pelo UUID do instrutor do curso.", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "uuid"), example = "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+    @Parameter(name = "name", description = "Filtra pelo nome do curso (busca parcial, case-insensitive).", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
+    @Parameter(name = "courseStatus", description = "Filtra pelo status do curso.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"INPROGRESS", "CONCLUDED"}))
+    @Parameter(name = "courseLevel", description = "Filtra pelo nível do curso.", in = ParameterIn.QUERY, schema = @Schema(type = "string", allowableValues = {"BEGINNER", "INTERMEDIARY", "ADVANCED"}))
+    @Parameter(name = "userInstructor", description = "Filtra pelo UUID do instrutor do curso.", in = ParameterIn.QUERY, schema = @Schema(type = "string", format = "uuid"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de cursos retornada com sucesso")
     })

@@ -37,7 +37,7 @@ public class UserNotificationController {
         this.authenticationCurrentUserService = authenticationCurrentUserService;
     }
 
-    @Operation(summary = "Lista todas as notificações de um usuário", description = "Retorna uma lista paginada de notificações para um usuário específico. Requer autenticação, e o usuário deve ser o dono do recurso ou um administrador.")
+    @Operation(summary = "Lista todas as notificações Não lidas de um usuário", description = "Retorna uma lista paginada de notificações não lidas para um usuário específico. Requer autenticação, e o usuário deve ser o dono do recurso ou um administrador.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de notificações retornada com sucesso"),
             @ApiResponse(responseCode = "403", description = "Proibido - Acesso negado a este recurso",

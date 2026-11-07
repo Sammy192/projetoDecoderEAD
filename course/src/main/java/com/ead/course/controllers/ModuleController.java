@@ -54,7 +54,7 @@ public class ModuleController {
 
     @Operation(summary = "Busca todos os módulos de um curso", description = "Retorna uma lista paginada de módulos de um curso específico. Requer perfil de ESTUDANTE.",
             parameters = {@Parameter(name = "title", description = "Filtra pelo título do módulo (busca parcial, case-insensitive).",
-                    in = ParameterIn.QUERY, schema = @Schema(type = "string"), example = "Introdução")
+                    in = ParameterIn.QUERY, schema = @Schema(type = "string"))
             })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de módulos retornada com sucesso"),
@@ -63,7 +63,7 @@ public class ModuleController {
     @PreAuthorize("hasAnyRole('STUDENT')")
     @GetMapping("/courses/{courseId}/modules")
     public ResponseEntity<Page<ModuleResponseDTO>> findAllModulesByCourseId(@PathVariable(value = "courseId") UUID courseId,
-                                                                      SpecificationTemplate.ModuleSpec spec,
+                                                                            @ParameterObject SpecificationTemplate.ModuleSpec spec,
                                                                       @ParameterObject Pageable pageable) {
         logger.info("Entering findAllModulesByCourseId with courseId: {}", courseId);
         Page<ModuleModel> moduleModelPage = moduleService.findAllModulesByCourseId(SpecificationTemplate.moduleCourseId(courseId).and(spec), pageable);

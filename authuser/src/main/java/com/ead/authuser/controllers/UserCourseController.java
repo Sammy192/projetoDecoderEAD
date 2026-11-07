@@ -1,14 +1,15 @@
 package com.ead.authuser.controllers;
 
-import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.configs.security.AuthenticationCurrentUserService;
 import com.ead.authuser.configs.security.UserDetailsImpl;
 import com.ead.authuser.dto.CourseDTO;
+import com.ead.authuser.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,11 +30,11 @@ import java.util.UUID;
 @Tag(name = "User-Course", description = "Endpoints para gerenciamento da relação entre usuários e cursos")
 public class UserCourseController {
 
-    private final CourseClient courseClient;
+    private final UserService userService;
     private final AuthenticationCurrentUserService authenticationCurrentUserService;
 
-    public UserCourseController(CourseClient courseClient, AuthenticationCurrentUserService authenticationCurrentUserService) {
-        this.courseClient = courseClient;
+    public UserCourseController(UserService userService, AuthenticationCurrentUserService authenticationCurrentUserService) {
+        this.userService = userService;
         this.authenticationCurrentUserService = authenticationCurrentUserService;
     }
 
@@ -46,7 +47,7 @@ public class UserCourseController {
     })
     @GetMapping("/users/{userId}/courses")
     public ResponseEntity<Page<CourseDTO>> getAllCoursesByUser(@PathVariable(value = "userId") UUID userId,
-                                                               @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC) Pageable pageable,
+                                                               @ParameterObject @PageableDefault(page = 0, size = 10, sort = "courseId", direction = Sort.Direction.ASC) Pageable pageable,
                                                                @Parameter(description = "Token JWT para autenticação no microserviço de cursos.", required = true)
                                                                @RequestHeader("Authorization") String token) {
         UserDetailsImpl loggedInUser = authenticationCurrentUserService.getCurrentUser();
@@ -57,7 +58,7 @@ public class UserCourseController {
             throw new AccessDeniedException("Acesso permitido somente para admin ou próprio usuário.");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(courseClient.getAllCoursesByUser(userId, pageable, token));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllCoursesByUser(userId, pageable, token));
     }
 
 }

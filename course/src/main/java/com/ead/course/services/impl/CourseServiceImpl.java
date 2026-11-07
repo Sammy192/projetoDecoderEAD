@@ -6,6 +6,7 @@ import com.ead.course.configs.security.AuthenticationCurrentUserService;
 import com.ead.course.configs.security.UserDetailsImpl;
 import com.ead.course.dto.CourseDTO;
 import com.ead.course.dto.NotificationCommandDTO;
+import com.ead.course.enums.CourseStatus;
 import com.ead.course.enums.UserStatusEnum;
 import com.ead.course.enums.UserTypeEnum;
 import com.ead.course.models.CourseModel;
@@ -125,6 +126,8 @@ public class CourseServiceImpl implements CourseService {
         UserModel userModel = userService.findById(userId);
 
         if(UserStatusEnum.BLOCKED.name().equalsIgnoreCase(userModel.getUserStatus())) throw new ConflictException("User is blocked.");
+        if(UserTypeEnum.USER.name().equalsIgnoreCase(userModel.getUserType())) throw new ConflictException("User is not a student. Please make a payment!");
+        if(CourseStatus.CONCLUDED.equals(courseModel.getCourseStatus())) throw new ConflictException("Course status is CONCLUDED. Choose a INPROGRESS course.");
 
         courseRepository.saveSubscriptionUserInCourse(courseModel.getCourseId(), userModel.getUserId());
         logger.info("User {} subscribed successfully to course {}.", userId, courseId);

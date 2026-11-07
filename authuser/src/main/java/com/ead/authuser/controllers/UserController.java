@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -65,10 +66,9 @@ public class UserController {
     })
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(SpecificationTemplate.UserSpec spec,
-                                                       @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC)
-                                                       Pageable pageable,
-                                                       Authentication authentication) {
+    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(@ParameterObject SpecificationTemplate.UserSpec spec,
+                                                             @ParameterObject  @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
+                                                             Authentication authentication) {
         UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
         logger.info("Authentication {}", userDetails.getUsername());
 

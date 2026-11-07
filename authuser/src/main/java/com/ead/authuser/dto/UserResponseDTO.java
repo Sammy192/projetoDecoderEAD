@@ -18,6 +18,8 @@ public class UserResponseDTO extends RepresentationModel<UserResponseDTO> {
     private String fullName;
     private UserStatusEnum userStatus;
     private UserTypeEnum userType;
+    private String phoneNumber;
+    private String imageUrl;
 
     public UserResponseDTO(UserModel userModel) {
         this.userId = userModel.getUserId();
@@ -26,6 +28,8 @@ public class UserResponseDTO extends RepresentationModel<UserResponseDTO> {
         this.fullName = userModel.getFullName();
         this.userStatus = userModel.getUserStatus();
         this.userType = userModel.getUserType();
+        this.phoneNumber = userModel.getPhoneNumber();
+        this.imageUrl = userModel.getImageUrl();
     }
 
     public UUID getUserId() { return userId; }
@@ -35,11 +39,16 @@ public class UserResponseDTO extends RepresentationModel<UserResponseDTO> {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     public String getFullName() { return fullName; }
+    public String getPhoneNumber() { return phoneNumber; }
     public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getImageUrl() { return imageUrl; }
     public UserStatusEnum getUserStatus() { return userStatus; }
     public void setUserStatus(UserStatusEnum userStatus) { this.userStatus = userStatus; }
     public UserTypeEnum getUserType() { return userType; }
     public void setUserType(UserTypeEnum userType) { this.userType = userType; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
 
     @Override
     public boolean equals(Object o) {

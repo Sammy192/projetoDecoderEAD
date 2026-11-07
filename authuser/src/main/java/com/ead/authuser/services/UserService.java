@@ -1,5 +1,6 @@
 package com.ead.authuser.services;
 
+import com.ead.authuser.dto.CourseDTO;
 import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.enums.UserTypeEnum;
 import com.ead.authuser.models.UserModel;
@@ -32,4 +33,6 @@ public interface UserService {
     Boolean existsByUserId(UUID userId);
 
     UserModel updateUser(UserModel userModel);
+
+    Page<CourseDTO> getAllCoursesByUser(UUID userId, Pageable pageable, String token);
 }

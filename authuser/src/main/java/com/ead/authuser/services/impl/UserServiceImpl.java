@@ -3,6 +3,7 @@ package com.ead.authuser.services.impl;
 import com.ead.authuser.clients.CourseClient;
 import com.ead.authuser.configs.exceptions.ConflictException;
 import com.ead.authuser.configs.exceptions.NotFoundException;
+import com.ead.authuser.dto.CourseDTO;
 import com.ead.authuser.dto.UserDTORequest;
 import com.ead.authuser.dto.UserEventDto;
 import com.ead.authuser.enums.ActionType;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel findById(UUID userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Error: User not found"));
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
@@ -150,5 +151,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userModel);
         userEventPublisher.publishUserEvent(new UserEventDto(userModel, ActionType.UPDATE));
         return userModel;
+    }
+
+    @Override
+    public Page<CourseDTO> getAllCoursesByUser(UUID userId, Pageable pageable, String token) {
+        if(Boolean.FALSE.equals(existsByUserId(userId))) throw new NotFoundException("User not found");
+        return courseClient.getAllCoursesByUser(userId, pageable, token);
     }
 }
