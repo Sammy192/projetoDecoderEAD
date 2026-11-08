@@ -85,11 +85,11 @@ A API utiliza um padrão de resposta para erros, facilitando o tratamento no lad
   "timestamp": "2026-11-02T21:00:00.000Z",
   "status": 422,
   "error": "Dados inválidos",
-  "path": "/ead-notification/users/some-user-id/notifications/some-notification-id/status",
+  "path": "/ead-authuser/auth/signup",
   "errors": [
     {
-      "fieldName": "notificationStatus",
-      "message": "O status da notificação não pode ser nulo"
+      "fieldName": "username",
+      "message": "Username já está em uso"
     }
   ]
 }
@@ -100,3 +100,19 @@ A API utiliza um padrão de resposta para erros, facilitando o tratamento no lad
 
 ## Comunicação Assíncrona (Mensageria)
 
+O microserviço de Autenticação utiliza mensageria para se comunicar de forma assíncrona com outros serviços, garantindo desacoplamento e resiliência.
+
+### Publicador de Eventos de Usuário (`UserEventPublisher`)
+
+Este publicador é responsável por notificar outros microserviços sobre mudanças nos dados dos usuários.
+
+- **Exchange:** `${ead.broker.exchange.userEvent}` (Tipo: `FANOUT`)
+- **Propósito:** Publica eventos de `CREATE`, `UPDATE` e `DELETE` de usuários. Quando um usuário é criado, atualizado ou deletado, uma mensagem (`UserEventDto`) é enviada para a exchange. Outros serviços, como o de Cursos, consomem esses eventos para manter seus próprios bancos de dados sincronizados, garantindo a integridade referencial.
+
+### Consumidor de Eventos de Pagamento (`PaymentConsumer`)
+
+Este consumidor escuta eventos relacionados a pagamentos processados na plataforma.
+
+- **Fila:** `${ead.broker.queue.paymentEventQueue.name}`
+- **Exchange:** `${ead.broker.exchange.paymentEvent}` (Tipo: `FANOUT`)
+- **Propósito:** Escuta eventos de pagamentos confirmados (`PaymentEventDTO`). Quando um pagamento é bem-sucedido, o `PaymentConsumer` recebe a notificação e pode executar ações importantes, como alterar o tipo do usuário (por exemplo, de `USER` para `INSTRUCTOR`), liberando acesso a conteúdos pagos.
