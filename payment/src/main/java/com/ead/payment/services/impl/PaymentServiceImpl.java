@@ -6,6 +6,7 @@ import com.ead.payment.dto.PaymentCommandDTO;
 import com.ead.payment.dto.PaymentEventDTO;
 import com.ead.payment.dto.PaymentRequestDTO;
 import com.ead.payment.enums.PaymentStatusControlEnum;
+import com.ead.payment.enums.UserStatusEnum;
 import com.ead.payment.models.CreditCardModel;
 import com.ead.payment.models.PaymentModel;
 import com.ead.payment.models.UserModel;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -111,7 +113,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
             if (PaymentStatusControlEnum.APPROVED.equals(lastPaymentByUser.getPaymentControl())
                     && lastPaymentByUser.getPaymentExpirationDate().isAfter(LocalDateTime.now(ZoneId.of("UTC")))) {
-                throw new BusinessException("Pagamento já realizado.");
+                throw new BusinessException("Pagamento já realizado. Válido ate: " + lastPaymentByUser.getPaymentExpirationDate().toString());
             }
         }
     }

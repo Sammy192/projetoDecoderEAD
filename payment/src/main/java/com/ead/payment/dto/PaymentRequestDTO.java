@@ -12,8 +12,8 @@ public record PaymentRequestDTO(@NotNull
                                 @NotBlank
                                 String cardHolderFullName,
 
-                                @NotBlank
-                                @CPF
+                                @NotBlank(message = "CPF deve ser informado.")
+                                @CPF(message = "CPF Inválido")
                                 String cardHolderCpf,
 
                                 @NotBlank

@@ -68,6 +68,18 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseModel saveCourse(CourseDTO courseDto) {
         logger.info("Starting to save a new course with name: {}", courseDto.name());
+        validacoesAntesDeInserirNovoCurso(courseDto);
+
+        CourseModel courseModel = new CourseModel();
+        BeanUtils.copyProperties(courseDto, courseModel);
+        courseModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
+        courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        CourseModel savedCourse = courseRepository.save(courseModel);
+        logger.info("Course saved successfully with id: {}", savedCourse.getCourseId());
+        return savedCourse;
+    }
+
+    private void validacoesAntesDeInserirNovoCurso(CourseDTO courseDto) {
         if (courseRepository.existsByName(courseDto.name())) {
             throw new ConflictException("Error: Course Name already exists.");
         }
@@ -83,14 +95,6 @@ public class CourseServiceImpl implements CourseService {
         if (!isUserAdmin && !loggedInUser.getUserId().equals(instructorUser.getUserId())) {
             throw new ConflictException("An instructor is only allowed to create courses for themselves.");
         }
-
-        CourseModel courseModel = new CourseModel();
-        BeanUtils.copyProperties(courseDto, courseModel);
-        courseModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
-        courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
-        CourseModel savedCourse = courseRepository.save(courseModel);
-        logger.info("Course saved successfully with id: {}", savedCourse.getCourseId());
-        return savedCourse;
     }
 
     @Override
