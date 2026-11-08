@@ -97,3 +97,21 @@ A API utiliza um padrão de resposta para erros, facilitando o tratamento no lad
 ---
 
 ## Comunicação Assíncrona (Mensageria)
+
+O microserviço de Cursos utiliza mensageria para se comunicar de forma assíncrona com outros serviços, garantindo desacoplamento e resiliência.
+
+### Consumidor de Eventos de Usuário (`UserConsumer`)
+
+Este consumidor é responsável por manter os dados dos usuários sincronizados com o microsserviço de autenticação.
+
+- **Fila:** `${ead.broker.queue.userEventQueue.name}`
+- **Exchange:** `${ead.broker.exchange.userEventExchange}` (Tipo: `FANOUT`)
+- **Propósito:** Escuta eventos de `CREATE`, `UPDATE` e `DELETE` de usuários. Quando um usuário é criado ou atualizado no serviço de autenticação, o `UserConsumer` salva ou atualiza as informações no banco de dados do serviço de cursos. Se um usuário é deletado, ele é removido daqui também. Isso garante a integridade referencial para as matrículas nos cursos.
+
+### Publicador de Comandos de Notificação (`NotificationCommandPublischer`)
+
+Este publicador é responsável por enviar solicitações de notificação para uma fila, que serão consumidas pelo microsserviço de notificações.
+
+- **Exchange:** `${ead.broker.exchange.notificationCommandExchange}`
+- **Routing Key:** `${ead.broker.key.notificationCommandKey}`
+- **Propósito:** Quando uma ação importante ocorre, como a matrícula de um novo aluno em um curso, o serviço publica uma mensagem. O microsserviço de notificações consome essa mensagem e envia uma notificação (por e-mail, por exemplo) para o usuário correspondente.
