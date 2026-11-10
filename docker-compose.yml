@@ -131,7 +131,7 @@ services:
     environment:
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
       ELASTICSEARCH_USERNAME: kibana_system
-      ELASTICSEARCH_PASSWORD: fd1D_VUNuLVH0-0oW10T
+      ELASTICSEARCH_PASSWORD: 1234567
 
     ports:
       - "5601:5601"

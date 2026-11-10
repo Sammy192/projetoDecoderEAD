@@ -1,0 +1,1214 @@
+{
+  "info": {
+    "_postman_id": "99066695-6414-4822-a2dd-971719d4c5e0",
+    "name": "FormacaoDecoder",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4198329"
+  },
+  "item": [
+    {
+      "name": "ead-auth-user",
+      "item": [
+        {
+          "name": "USER",
+          "item": [
+            {
+              "name": "Users",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Courses By User",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users/14c401e5-9bac-4ec2-9ec9-f8c8cd8cf344/courses",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "14c401e5-9bac-4ec2-9ec9-f8c8cd8cf344",
+                    "courses"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "creationDate,desc",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "size",
+                      "value": "10",
+                      "type": "text",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "User by id",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{json_web_token_0gmb}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users/e7aba586-ea52-4c78-aa68-80cf3a6ce81f",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "e7aba586-ea52-4c78-aa68-80cf3a6ce81f"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update UserType",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users/14c401e5-9bac-4ec2-9ec9-f8c8cd8cf344/usertype?userType=INSTRUCTOR",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "14c401e5-9bac-4ec2-9ec9-f8c8cd8cf344",
+                    "usertype"
+                  ],
+                  "query": [
+                    {
+                      "key": "userType",
+                      "value": "INSTRUCTOR"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update User",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"fullName\": \"Clara Seila\",\r\n    \"phoneNumber\": \"11123456789\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users/39f1a5f2-65f4-4de9-8953-4b1fee6ffbfd",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "39f1a5f2-65f4-4de9-8953-4b1fee6ffbfd"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Password",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"fullName\": \"Samuel Borges\",\r\n    \"phoneNumber\": \"11123456789\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8087/ead-authuser/users/e1724331-1938-4560-8526-a16ae93bbdf5",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8087",
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "e1724331-1938-4560-8526-a16ae93bbdf5"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update image",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"imageUrl\": \"Image Carlos\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users/f28e10ad-d336-48d2-b677-faa45e99c572/image",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "f28e10ad-d336-48d2-b677-faa45e99c572",
+                    "image"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete User",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/users/b68f52d0-fa54-4fae-896a-9eeba47c226d",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "users",
+                    "b68f52d0-fa54-4fae-896a-9eeba47c226d"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "AUTH",
+          "item": [
+            {
+              "name": "SIGN UP",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"username\": \"mariah\",\r\n    \"email\": \"mariah@example.com\",\r\n    \"password\": \"!@34567Ab\",\r\n    \"fullName\": \"Mariah Borges\",\r\n    \"phoneNumber\": \"11123456789\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/auth/signup",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "auth",
+                    "signup"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Login",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"username\": \"lucasborges\",\r\n    \"password\": \"Cao123456@\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiGateway}}/ead-authuser/auth/login",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-authuser",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Refresh Configs - Actuator",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{apiGateway}}/ead-authuser/actuator/refresh",
+              "host": [
+                "{{apiGateway}}"
+              ],
+              "path": [
+                "ead-authuser",
+                "actuator",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Authuser Configs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8888/ead-authuser-service/main",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8888",
+              "path": [
+                "ead-authuser-service",
+                "main"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ead-course",
+      "item": [
+        {
+          "name": "courses",
+          "item": [
+            {
+              "name": "Get Users By Course",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-course/courses/19f8ffd3-2b4f-4bb1-b3b5-2128f6c3c232/users",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-course",
+                    "courses",
+                    "19f8ffd3-2b4f-4bb1-b3b5-2128f6c3c232",
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "creationDate,desc",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "size",
+                      "value": "10",
+                      "type": "text",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Course",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"JavaScript\",\r\n    \"description\": \"Aprenda JavaScript\",\r\n    \"userInstructor\": \"de5016c5-6e62-4b4f-b40d-374705d6fd63\",\r\n    \"courseStatus\": \"CONCLUDED\",\r\n    \"courseLevel\": \"BEGINNER\",\r\n    \"imageUrl\": \"www.michellibrito.com/image/01\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiGateway}}/ead-course/courses",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-course",
+                    "courses"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Subscription User in a Course",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{    \r\n    \"userId\": \"14c401e5-9bac-4ec2-9ec9-f8c8cd8cf344\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{apiGateway}}/ead-course/courses/f2e53fde-a7b3-4a94-bf1f-fa2ac753856b/users/subscription",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-course",
+                    "courses",
+                    "f2e53fde-a7b3-4a94-bf1f-fa2ac753856b",
+                    "users",
+                    "subscription"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update a Course",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Api Restfull\",\r\n    \"description\": \"Aprenda a criar APIs RESTful com Spring boot\",\r\n    \"userInstructor\": \"030c22d3-3913-43d7-a4a6-fbe5804a6c42\",\r\n    \"courseStatus\": \"CONCLUDED\",\r\n    \"courseLevel\": \"BEGINNER\",\r\n    \"imageUrl\": \"www.michellibrito.com/image/01\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eadCourses}}/courses/f2e53fde-a7b3-4a94-bf1f-fa2ac753856b",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "f2e53fde-a7b3-4a94-bf1f-fa2ac753856b"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get All Courses",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-course/courses",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-course",
+                    "courses"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "1",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "0",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "creationDate,ASC",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "name",
+                      "value": "Java",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "courseLevel",
+                      "value": "BEGINNER",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "courseStatus",
+                      "value": "CONCLUDED",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "userInstructor",
+                      "value": "030c22d3-3913-43d7-a4a6-fbe5804a6c42",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "userId",
+                      "value": "14c401e5-9bac-4ec2-9ec9-f8c8cd8cf344",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get One Course",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/courses/f2e53fde-a7b3-4a94-bf1f-fa2ac753856c",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "f2e53fde-a7b3-4a94-bf1f-fa2ac753856c"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Course",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{apiGateway}}/ead-course/courses/4cdac83d-09e9-4fe2-aa99-5f9fbb0fda85",
+                  "host": [
+                    "{{apiGateway}}"
+                  ],
+                  "path": [
+                    "ead-course",
+                    "courses",
+                    "4cdac83d-09e9-4fe2-aa99-5f9fbb0fda85"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Course Copy",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"name\": \"Api Restful\",\r\n    \"description\": \"Aprenda a criar APIs RESTful com Spring boot\",\r\n    \"userInstructor\": \"030c22d3-3913-43d7-a4a6-fbe5804a6c42\",\r\n    \"courseStatus\": \"CONCLUDED\",\r\n    \"courseLevel\": \"BEGINNER\",\r\n    \"imageUrl\": \"www.michellibrito.com/image/01\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eadCourses}}/courses",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Modules",
+          "item": [
+            {
+              "name": "Create Module Inside a Course",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"Api java 5\",\r\n    \"description\": \"Aprenda a lidar com a api do java\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eadCourses}}/courses/8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb/modules",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb",
+                    "modules"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Module Course",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"Api Java 2\",\r\n    \"description\": \"Aprenda a lidar com a api do Java\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eadCourses}}/courses/8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb",
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Modules By Course",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/courses/c3b61804-9d14-4aed-a16a-5711e0672f11/modules",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "c3b61804-9d14-4aed-a16a-5711e0672f11",
+                    "modules"
+                  ],
+                  "query": [
+                    {
+                      "key": "size",
+                      "value": "1",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "0",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sort",
+                      "value": "creationDate,ASC",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "title",
+                      "value": "Api java 3",
+                      "type": "text",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get One Module By Course",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/courses/8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb",
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Module Course",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/courses/8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb/modules/553eff25-6238-4030-b385-75e40322baf0",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "courses",
+                    "8eef9ca7-123d-47d0-bcb0-b7c51b61e5fb",
+                    "modules",
+                    "553eff25-6238-4030-b385-75e40322baf0"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Lessons",
+          "item": [
+            {
+              "name": "New Lesson By Module",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"Java Records 3\",\r\n    \"description\": \"Entendo tudo sobre records 3\",\r\n    \"videoUrl\": \"url 3\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eadCourses}}/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606/lessons",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                    "lessons"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Lesson Inside a Module",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"title\": \"Java Records 33\",\r\n    \"description\": \"Entendo tudo sobre records 33\",\r\n    \"videoUrl\": \"url 3\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{eadCourses}}/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606/lessons/5deb6260-5216-4637-a1c3-ef1a890a819a",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                    "lessons",
+                    "5deb6260-5216-4637-a1c3-ef1a890a819a"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Lessons By Module",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606/lessons",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                    "lessons"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get One Lesson By Module",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606/lessons/15848b88-a9b2-49e0-a0b2-df333c9487b4",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                    "lessons",
+                    "15848b88-a9b2-49e0-a0b2-df333c9487b4"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Lesson Inside Module",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{eadCourses}}/modules/0ebe4186-c3fb-4f47-a359-a0ac00fbe606/lessons/15848b88-a9b2-49e0-a0b2-df333c9487b4",
+                  "host": [
+                    "{{eadCourses}}"
+                  ],
+                  "path": [
+                    "modules",
+                    "0ebe4186-c3fb-4f47-a359-a0ac00fbe606",
+                    "lessons",
+                    "15848b88-a9b2-49e0-a0b2-df333c9487b4"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Course Configs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8888/ead-course-service/main",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8888",
+              "path": [
+                "ead-course-service",
+                "main"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ead-config-server",
+      "item": [
+        {
+          "name": "Application Global Configs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8888/application/main",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8888",
+              "path": [
+                "application",
+                "main"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refres Scope",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/ead-authuser/refreshscope",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "ead-authuser",
+                "refreshscope"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ead-notification",
+      "item": [
+        {
+          "name": "All Notifications Created by User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkMTQyYmNhMi1jMmRiLTQ4M2EtYjUzNS1hNzViNzA3NDBlMjgiLCJyb2xlcyI6IiIsImlhdCI6MTc4NzY3ODUyNSwiZXhwIjoxNzg3NjkyOTI1fQ.VU1JqlsFmZjlD1ccTVj4Bq8kxeoSz7winoqTnqpB8XlJ9YYJ9w4WLjXya8WNjA3SzgPJc28KuUGRJaAZg2Ckpw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiGateway}}/ead-notification/users/df725a03-b804-4fc9-ae93-72b1b55a3e78/notifications",
+              "host": [
+                "{{apiGateway}}"
+              ],
+              "path": [
+                "ead-notification",
+                "users",
+                "df725a03-b804-4fc9-ae93-72b1b55a3e78",
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Notification Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"notificationStatus\": \"READ\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiGateway}}/ead-notification/users/8f2cd170-958d-4c42-ae45-0220745078b0/notifications/f4d15793-77c4-4fcd-a37c-60cd87adb802/status",
+              "host": [
+                "{{apiGateway}}"
+              ],
+              "path": [
+                "ead-notification",
+                "users",
+                "8f2cd170-958d-4c42-ae45-0220745078b0",
+                "notifications",
+                "f4d15793-77c4-4fcd-a37c-60cd87adb802",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ead-payment",
+      "item": [
+        {
+          "name": "Payments",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"valuePaid\": 899.00,\r\n    \"cardHolderFullName\": \"Rafaela Medeiros\",\r\n    \"cardHolderCpf\": \"926.286.340-31\",\r\n    \"creditCardNumber\": \"123456789012345679\",\r\n    \"expirationDate\": \"12/2029\",\r\n    \"cvvCode\": \"301\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{apiGateway}}/ead-payment/users/e7aba586-ea52-4c78-aa68-80cf3a6ce81f/payments",
+              "host": [
+                "{{apiGateway}}"
+              ],
+              "path": [
+                "ead-payment",
+                "users",
+                "e7aba586-ea52-4c78-aa68-80cf3a6ce81f",
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payments by userId",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiGateway}}/ead-payment/users/e7aba586-ea52-4c78-aa68-80cf3a6ce81f/payments",
+              "host": [
+                "{{apiGateway}}"
+              ],
+              "path": [
+                "ead-payment",
+                "users",
+                "e7aba586-ea52-4c78-aa68-80cf3a6ce81f",
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "size",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "paymentRequestDate,DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "paymentControl",
+                  "value": "PENDING",
+                  "disabled": true
+                },
+                {
+                  "key": "valuePaid",
+                  "value": "899.00",
+                  "disabled": true
+                },
+                {
+                  "key": "lastDigitsCreditCard",
+                  "value": "5555",
+                  "disabled": true
+                },
+                {
+                  "key": "paymentMessage",
+                  "value": "error",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get One Payment",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{apiGateway}}/ead-payment/users/e7aba586-ea52-4c78-aa68-80cf3a6ce81f/payments/e72eddfd-1404-4ad7-a04e-7751eb6e6ef8",
+              "host": [
+                "{{apiGateway}}"
+              ],
+              "path": [
+                "ead-payment",
+                "users",
+                "e7aba586-ea52-4c78-aa68-80cf3a6ce81f",
+                "payments",
+                "e72eddfd-1404-4ad7-a04e-7751eb6e6ef8"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "size",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "paymentRequestDate,DESC",
+                  "disabled": true
+                },
+                {
+                  "key": "paymentControl",
+                  "value": "PENDING",
+                  "disabled": true
+                },
+                {
+                  "key": "valuePaid",
+                  "value": "899.00",
+                  "disabled": true
+                },
+                {
+                  "key": "lastDigitsCreditCard",
+                  "value": "5555",
+                  "disabled": true
+                },
+                {
+                  "key": "paymentMessage",
+                  "value": "error",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "supabase_service_role_api_key_1eew",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0gmb",
+      "secret": true
+    }
+  ]
+}

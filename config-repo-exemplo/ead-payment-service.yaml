@@ -1,0 +1,54 @@
+server:
+  port: 8086
+  servlet:
+    context-path: '/ead-payment/'
+
+spring:
+  application:
+    name: ead-payment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5435/ead-payment
+    username: postgres
+    password: 1234567
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non-contextual-creation: true
+
+ead:
+  broker:
+    exchange:
+      userEventExchange: ead.userevent
+      paymentCommandExchange: ead.paymentcommand
+      paymentEventExchange: ead.paymentevent
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.payment
+      paymentCommandQueue:
+        name: ead.paymentcommand.ms.payment
+    key:
+      paymentCommandKey: ms.payment
+
+integration:
+  stripe:
+    enabled: false
+    secretKey: '{cipher}ec4adc4786ce5c158064b28a376817c5a78bee6612841af81f3fa2db91de4e8aad2164bfe0383c8b6c59fda2cf167f181fbdadc1f024081ffcebd81cf5d9308c54946eb8f76ef486e1ef3c57b7cc3b8b1850e53972809b55c0d862186a07a4536f98772f0469161dd27752d1c7f5b42fc00978c4952b9073fe55c64094f0e974'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+logging:
+  level:
+    com.ead: info
+    root: info
+    org.springframework.web: info
+    org.hibernate: info
