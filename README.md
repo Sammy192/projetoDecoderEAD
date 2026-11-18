@@ -75,6 +75,9 @@ Segue imagens de configs de exemplos: ( configs estão no arquivo docker compose
 <img width="886" height="687" alt="image" src="https://github.com/user-attachments/assets/6b248e08-9091-47ce-8eda-0a24a88a01b7" />
 
 
+<img width="705" height="553" alt="image" src="https://github.com/user-attachments/assets/994b80b0-c516-48b4-a7ce-35eee47103bc" />
+
+
 ------------------------------------------------------------
 
 Ficaria ao final assim os servers:
@@ -151,6 +154,15 @@ INSERT INTO public.tb_users_roles(
 
 ```
 
+Precisamos no banco do 'ead-recommendation-agent' ativar recurso do vector:
+
+```
+CREATE EXTENSION IF NOT EXISTS vector
+```
+
+<img width="1307" height="719" alt="image" src="https://github.com/user-attachments/assets/925fe216-3a74-4a15-b660-17ae6639487c" />
+
+
 Após essa preparação, podemos iniciar os microserviços:
 
 Executar os dockers:
@@ -173,6 +185,8 @@ Subir os projetos na IDE na ordem:
 6 - Notification
 
 7 - payment
+
+8 - ead-recommendation-agent
 
 
 ## Configuração Kibana
