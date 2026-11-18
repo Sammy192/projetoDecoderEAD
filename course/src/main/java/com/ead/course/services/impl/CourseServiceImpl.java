@@ -5,13 +5,17 @@ import com.ead.course.configs.exceptions.NotFoundException;
 import com.ead.course.configs.security.AuthenticationCurrentUserService;
 import com.ead.course.configs.security.UserDetailsImpl;
 import com.ead.course.dto.CourseDTO;
+import com.ead.course.dto.CourseEventRecordDto;
 import com.ead.course.dto.NotificationCommandDTO;
+import com.ead.course.dto.UserSubscriptionEventRecordDto;
 import com.ead.course.enums.CourseStatus;
 import com.ead.course.enums.UserStatusEnum;
 import com.ead.course.enums.UserTypeEnum;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.UserModel;
+import com.ead.course.publishers.CourseEventPublisher;
 import com.ead.course.publishers.NotificationCommandPublischer;
+import com.ead.course.publishers.UserSubscriptionPublisher;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
@@ -40,13 +44,17 @@ public class CourseServiceImpl implements CourseService {
     private final UserService userService;
     private final NotificationCommandPublischer notificationCommandPublischer;
     private final AuthenticationCurrentUserService authenticationCurrentUserService;
+    private final CourseEventPublisher courseEventPublisher;
+    private final UserSubscriptionPublisher userSubscriptionPublisher;
 
-    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, UserService userService, NotificationCommandPublischer notificationCommandPublischer, AuthenticationCurrentUserService authenticationCurrentUserService) {
+    public CourseServiceImpl(CourseRepository courseRepository, ModuleService moduleService, UserService userService, NotificationCommandPublischer notificationCommandPublischer, AuthenticationCurrentUserService authenticationCurrentUserService, CourseEventPublisher courseEventPublisher, UserSubscriptionPublisher userSubscriptionPublisher) {
         this.courseRepository = courseRepository;
         this.moduleService = moduleService;
         this.userService = userService;
         this.notificationCommandPublischer = notificationCommandPublischer;
         this.authenticationCurrentUserService = authenticationCurrentUserService;
+        this.courseEventPublisher = courseEventPublisher;
+        this.userSubscriptionPublisher = userSubscriptionPublisher;
     }
 
     @Transactional
@@ -75,6 +83,7 @@ public class CourseServiceImpl implements CourseService {
         courseModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         CourseModel savedCourse = courseRepository.save(courseModel);
+        sendCourseEvent(courseModel);
         logger.info("Course saved successfully with id: {}", savedCourse.getCourseId());
         return savedCourse;
     }
@@ -123,6 +132,16 @@ public class CourseServiceImpl implements CourseService {
     public void saveSubscriptionUserInCourse(UUID courseId, UUID userId) {
         logger.info("Attempting to subscribe user {} to course {}", userId, courseId);
         CourseModel courseModel = findById(courseId);
+        UserModel userModel = validationsBeforeSubscriptionUserInCourse(courseId, userId, courseModel);
+
+        courseRepository.saveSubscriptionUserInCourse(courseModel.getCourseId(), userModel.getUserId());
+        enviaMensagemNotificacao(courseModel, userModel);
+        sendSubscriptionUserInCourseEvent(userModel, courseModel);
+        logger.info("User {} subscribed successfully to course {}.", userId, courseId);
+
+    }
+
+    private UserModel validationsBeforeSubscriptionUserInCourse(UUID courseId, UUID userId, CourseModel courseModel) {
         if (courseRepository.existsByCourseIdAndUsersUserId(courseId, userId)) {
             logger.warn("Conflict: User {} is already subscribed to course {}.", userId, courseId);
             throw new ConflictException("Error: subscription already exists!");
@@ -132,11 +151,7 @@ public class CourseServiceImpl implements CourseService {
         if(UserStatusEnum.BLOCKED.name().equalsIgnoreCase(userModel.getUserStatus())) throw new ConflictException("User is blocked.");
         if(UserTypeEnum.USER.name().equalsIgnoreCase(userModel.getUserType())) throw new ConflictException("User is not a student. Please make a payment!");
         if(CourseStatus.CONCLUDED.equals(courseModel.getCourseStatus())) throw new ConflictException("Course status is CONCLUDED. Choose a INPROGRESS course.");
-
-        courseRepository.saveSubscriptionUserInCourse(courseModel.getCourseId(), userModel.getUserId());
-        logger.info("User {} subscribed successfully to course {}.", userId, courseId);
-        enviaMensagemNotificacao(courseModel, userModel);
-
+        return userModel;
     }
 
     private void enviaMensagemNotificacao(CourseModel courseModel, UserModel userModel) {
@@ -148,6 +163,32 @@ public class CourseServiceImpl implements CourseService {
             notificationCommandPublischer.publishNotificationCommand(notificationCommandDTO);
         } catch (Exception e) {
             logger.error("Error sending notification for user {} in course {}: {}", userModel.getUserId(), courseModel.getCourseId(), e.getMessage());
+        }
+    }
+
+    private void sendCourseEvent(CourseModel course){
+        try {
+            var courseEventRecordDto = new CourseEventRecordDto(
+                    course.getCourseId().toString(),
+                    course.getName(),
+                    course.getDescription(),
+                    course.getCourseLevel().toString()
+            );
+            courseEventPublisher.publishCourseEvent(courseEventRecordDto);
+        } catch (Exception e) {
+            logger.warn("Error sending Course Event!");
+        }
+    }
+
+    private void sendSubscriptionUserInCourseEvent(UserModel user, CourseModel course){
+        try{
+            var userSubscriptionEventRecordDto = new UserSubscriptionEventRecordDto(
+                    user.getUserId().toString(),
+                    course.getCourseId().toString()
+            );
+            userSubscriptionPublisher.publishUserSubscriptionEvent(userSubscriptionEventRecordDto);
+        } catch (Exception e) {
+            logger.warn("Error sending User Subscription Events");
         }
     }
 }

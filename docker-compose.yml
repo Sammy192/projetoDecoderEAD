@@ -60,6 +60,22 @@ services:
       - ./.data/postgresql/dataEadPayment:/var/lib/postgresql/dataEadPayment
     networks:
       - dev-network
+# ====================================================================================================================
+# POSTGRES SERVER - ead-recommendation-agent
+#Comando para ativar a extensão pgvector: CREATE EXTENSION IF NOT EXISTS vector;
+# ====================================================================================================================
+pg-docker-ead-recommendation-agent:
+  image: pgvector/pgvector:pg16
+  container_name: pg-ead-recommendation-agent
+  environment:
+    POSTGRES_DB: ead-recommendation-agent
+    POSTGRES_PASSWORD: 1234567
+  ports:
+    - 5436:5432
+  volumes:
+    - ./.data/postgresql/dataEadRecommendationagent:/var/lib/postgresql/dataEadRecommendationagent
+  networks:
+    - dev-network
   # ====================================================================================================================
   # PGADMIN
   # ====================================================================================================================
