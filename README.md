@@ -82,6 +82,26 @@ Ficaria ao final assim os servers:
 
 <img width="589" height="492" alt="image" src="https://github.com/user-attachments/assets/33b7cbe3-a6c0-49e7-9b9a-215b2183c159" />
 
+Subir os projetos na IDE na ordem:
+
+1 - service-registry
+
+2 - Config-server
+
+3 - Api-gateway
+
+4 - Authuser
+
+5 - Course
+
+6 - Notification
+
+7 - payment
+
+Após iniciar os serviços;
+
+
+Precisamos no banco do authuser:
 
 
 Precisamos inserir um USER do tipo ADMIN para termos um user com privilégios elevados:
