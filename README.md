@@ -27,6 +27,18 @@ Cada microserviço tem seu README que contém informações sobre a aplicação 
 
 Arquivo da Collection Postman disponível na pasta raiz do repo;
 
+-------------------------------------------------------------------------------------------------------------------------------
+
+Adicionado microserviço 'ead-recommendation-agent' de recomendação para próximo curso gerada com RAG AI.
+Básicamente o MS tem um banco de vector que armazena contexto de cursos criados e no evento de um user se inscrever em um determinado curso o AGENT gera uma recomendação de curso para este usuario, gerando sempre histórico de cursos e de inscrições para saber quais cursos um determinado user já se inscreveu.
+
+Detalhes podem ser conferidos no material que esta na pasta 'material_ai'
+
+<img width="1249" height="652" alt="image" src="https://github.com/user-attachments/assets/2dd64704-8635-41a9-b8cd-c53758c23fd8" />
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+
 ## Iniciar primeira vez:
 
 Após download do projeto siga os passos:
@@ -221,9 +233,4 @@ Que fica configurada no arquivo Filebeat:  ".\elastic\filebeat.yml"
 Agora poderá manipular os logs gerados e criar o dashboard. (perdido ao zerar os dados do docker - necessário salvar caso necessário)
 
 
--------------------------------------------------------------------------------------------------------------------------------
 
-Adicionado microserviço de recomendação para próximo curso.
-Básicamente: o MS tem um banco de vector que armazena contexto de cursos criados e no evento de um user se inscrever em um determinado curso o AGENT gera uma recomendação de curso para este usuario, gerando sempre histórico de cursos e de inscrições para saber quais cursos um determinado user já se inscreveu.
-
-Detalhes podem ser conferidos no material que esta na pasta 'material_ai'
