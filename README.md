@@ -221,3 +221,9 @@ Que fica configurada no arquivo Filebeat:  ".\elastic\filebeat.yml"
 Agora poderá manipular os logs gerados e criar o dashboard. (perdido ao zerar os dados do docker - necessário salvar caso necessário)
 
 
+-------------------------------------------------------------------------------------------------------------------------------
+
+Adicionado microserviço de recomendação para próximo curso.
+Básicamente: o MS tem um banco de vector que armazena contexto de cursos criados e no evento de um user se inscrever em um determinado curso o AGENT gera uma recomendação de curso para este usuario, gerando sempre histórico de cursos e de inscrições para saber quais cursos um determinado user já se inscreveu.
+
+Detalhes podem ser conferidos no material que esta na pasta 'material_ai'
