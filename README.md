@@ -82,6 +82,12 @@ Ficaria ao final assim os servers:
 
 <img width="589" height="492" alt="image" src="https://github.com/user-attachments/assets/33b7cbe3-a6c0-49e7-9b9a-215b2183c159" />
 
+Executar os dockers:
+```
+docker compose up -d
+```
+
+
 Subir os projetos na IDE na ordem:
 
 1 - service-registry
