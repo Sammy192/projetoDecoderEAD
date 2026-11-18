@@ -29,11 +29,14 @@ ead:
     exchange:
       userEventExchange: ead.userevent
       notificationCommandExchange: ead.notificationcommand
+      courseEventExchange: ead.courseevent
     queue:
       userEventQueue:
         name: ead.userevent.ms.course
     key:
       notificationCommandKey: ms.notification
+      courseCreatedKey: ms.course.created.course
+      userSubscriptionCreatedKey: ms.course.created.usersubscription
 
 management:
   endpoints:

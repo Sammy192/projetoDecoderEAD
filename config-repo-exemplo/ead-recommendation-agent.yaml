@@ -1,0 +1,78 @@
+server:
+  port: 8089
+  servlet:
+    context-path: '/ead-recommendation-agent/'
+
+spring:
+  application:
+    name: ead-recommendation-agent
+  datasource:
+    url: jdbc:postgresql://localhost:5436/ead-recommendation-agent
+    username: postgres
+    password: 1234567
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non-contextual-creation: true
+  ai:
+    google:
+      genai:
+        api-key: chaveDaApi
+        chat:
+          options:
+            model: gemini-3.5-flash-lite
+            temperature: 0.2
+        embedding:
+          api-key: chaveDaApi
+          text:
+            options:
+              model: gemini-embedding-2
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        index-type: NONE
+        dimensions: 3072
+        distance-type: COSINE_DISTANCE
+
+logging:
+  level:
+    com.ead: info
+    root: info
+    org.springframework.web: info
+    org.hibernate: info
+
+ead:
+  runner:
+    vectorstore:
+      enabled: false
+    rag:
+      enabled: false
+  broker:
+    exchange:
+      courseEventExchange: ead.courseevent
+      notificationCommandExchange: ead.notificationcommand
+    queue:
+      courseEventQueue:
+        name: ead.courseevent.ms.recommendationagent.course
+      userSubscriptionEventQueue:
+        name: ead.courseevent.ms.recommendationagent.usersubscription
+    key:
+      courseCreatedKey: ms.course.created.course
+      userSubscriptionCreatedKey: ms.course.created.usersubscription
+      notificationCommandKey: ms.notification
+  auth:
+    username: recommendationagent
+    password: 'ead123ra'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
