@@ -230,6 +230,8 @@ Senha:1234567
 
 Que fica configurada no arquivo Filebeat:  ".\elastic\filebeat.yml"
 
+Poderá importar o dashboard criado que esta na raiz do projeto com nome de 'Ead dashboard.json'
+
 Agora poderá manipular os logs gerados e criar o dashboard. (perdido ao zerar os dados do docker - necessário salvar caso necessário)
 
 
