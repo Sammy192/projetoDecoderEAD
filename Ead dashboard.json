@@ -1,0 +1,270 @@
+{
+  "description": "",
+  "options": {
+    "auto_apply_filters": true,
+    "hide_panel_borders": false,
+    "hide_panel_titles": false,
+    "sync_colors": false,
+    "sync_cursor": true,
+    "sync_tooltips": false,
+    "use_margins": true
+  },
+  "tags": [
+    "1a9489a1-5744-470c-b56a-edee06a9c724"
+  ],
+  "title": "Ead dashboard",
+  "filters": [],
+  "esql_approximation": false,
+  "query": {
+    "expression": "",
+    "language": "kql"
+  },
+  "panels": [
+    {
+      "grid": {
+        "y": 0,
+        "x": 0,
+        "w": 48,
+        "h": 2
+      },
+      "config": {
+        "content": "Dashboard Métricas de Logs EAD Microservices",
+        "settings": {
+          "open_links_in_new_tab": true
+        }
+      },
+      "id": "13184f6a-2668-4bad-99c4-956c480b2518",
+      "type": "markdown"
+    },
+    {
+      "grid": {
+        "y": 2,
+        "x": 0,
+        "w": 24,
+        "h": 15
+      },
+      "config": {
+        "ref_id": "badb3944-940c-4131-aa46-ce247782f1ce"
+      },
+      "id": "c32db843-ae32-4a6c-9ae2-fb229fe10ec6",
+      "type": "vis"
+    },
+    {
+      "grid": {
+        "y": 17,
+        "x": 0,
+        "w": 16,
+        "h": 11
+      },
+      "config": {
+        "data_source": {
+          "type": "data_view_reference",
+          "ref_id": "8e1dcaa3-0b25-4de9-b726-540821d7c445"
+        },
+        "type": "metric",
+        "sampling": 1,
+        "ignore_global_filters": false,
+        "metrics": [
+          {
+            "type": "primary",
+            "operation": "count",
+            "empty_as_null": true,
+            "color": {
+              "type": "auto"
+            }
+          }
+        ],
+        "breakdown_by": {
+          "operation": "terms",
+          "fields": [
+            "service.name"
+          ],
+          "limit": 9,
+          "other_bucket": {
+            "include_documents_without_field": false
+          },
+          "rank_by": {
+            "type": "metric",
+            "metric_index": 0,
+            "direction": "desc"
+          },
+          "columns": 3
+        },
+        "styling": {
+          "density": "default",
+          "primary": {
+            "position": "bottom",
+            "labels": {
+              "alignment": "left"
+            },
+            "value": {
+              "sizing": "auto",
+              "alignment": "right"
+            }
+          }
+        }
+      },
+      "id": "00eeb5a0-66ae-4a70-bc5f-3a38cbdbcc0b",
+      "type": "vis"
+    },
+    {
+      "grid": {
+        "y": 17,
+        "x": 16,
+        "w": 32,
+        "h": 14
+      },
+      "config": {
+        "ref_id": "db98ee3f-9cd5-42cd-bfe5-c101b989e522",
+        "overrides": {}
+      },
+      "id": "2db38607-f3c0-411f-aaa5-5564491f9337",
+      "type": "discover_session"
+    },
+    {
+      "grid": {
+        "y": 2,
+        "x": 24,
+        "w": 24,
+        "h": 6
+      },
+      "config": {
+        "type": "data_table",
+        "data_source": {
+          "type": "data_view_reference",
+          "ref_id": "8e1dcaa3-0b25-4de9-b726-540821d7c445"
+        },
+        "sampling": 1,
+        "ignore_global_filters": false,
+        "metrics": [
+          {
+            "operation": "count",
+            "empty_as_null": true
+          }
+        ],
+        "rows": [
+          {
+            "operation": "terms",
+            "fields": [
+              "log.level"
+            ],
+            "limit": 9,
+            "other_bucket": {
+              "include_documents_without_field": false
+            },
+            "rank_by": {
+              "type": "metric",
+              "metric_index": 0,
+              "direction": "desc"
+            }
+          }
+        ],
+        "styling": {
+          "row_numbers": {
+            "visible": true
+          }
+        }
+      },
+      "id": "2da76a91-ef54-4143-b000-84c524d078c6",
+      "type": "vis"
+    },
+    {
+      "grid": {
+        "y": 8,
+        "x": 24,
+        "w": 24,
+        "h": 9
+      },
+      "config": {
+        "type": "data_table",
+        "data_source": {
+          "type": "data_view_reference",
+          "ref_id": "8e1dcaa3-0b25-4de9-b726-540821d7c445"
+        },
+        "sampling": 1,
+        "ignore_global_filters": false,
+        "metrics": [
+          {
+            "operation": "count",
+            "empty_as_null": true
+          }
+        ],
+        "rows": [
+          {
+            "operation": "terms",
+            "fields": [
+              "service.name"
+            ],
+            "limit": 9,
+            "other_bucket": {
+              "include_documents_without_field": false
+            },
+            "rank_by": {
+              "type": "metric",
+              "metric_index": 0,
+              "direction": "desc"
+            }
+          }
+        ],
+        "styling": {
+          "row_numbers": {
+            "visible": true
+          }
+        }
+      },
+      "id": "8265c6ab-bc5f-4fde-9a60-649e35628b43",
+      "type": "vis"
+    }
+  ],
+  "pinned_panels": [
+    {
+      "id": "a487f857-61ea-4cbc-840b-7480e03489a7",
+      "grow": false,
+      "width": "medium",
+      "config": {
+        "use_global_filters": true,
+        "ignore_validations": false,
+        "values_source": "field",
+        "data_view_id": "8e1dcaa3-0b25-4de9-b726-540821d7c445",
+        "field_name": "log.level",
+        "exclude": false,
+        "sort": {
+          "by": "_count",
+          "direction": "desc"
+        },
+        "exists_selected": false,
+        "run_past_timeout": false,
+        "search_technique": "wildcard",
+        "selected_options": [],
+        "single_select": false
+      },
+      "type": "options_list_control"
+    },
+    {
+      "id": "85987291-e32f-46ee-af5b-e19eb20eecc8",
+      "grow": false,
+      "width": "medium",
+      "config": {
+        "use_global_filters": true,
+        "ignore_validations": false,
+        "values_source": "field",
+        "data_view_id": "8e1dcaa3-0b25-4de9-b726-540821d7c445",
+        "field_name": "service.name",
+        "exclude": false,
+        "sort": {
+          "by": "_count",
+          "direction": "desc"
+        },
+        "exists_selected": false,
+        "run_past_timeout": false,
+        "search_technique": "wildcard",
+        "selected_options": [],
+        "single_select": false
+      },
+      "type": "options_list_control"
+    }
+  ],
+  "access_control": {
+    "access_mode": "default"
+  }
+}
